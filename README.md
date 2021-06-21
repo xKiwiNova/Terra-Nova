@@ -1,2 +1,3 @@
 # Terra-Nova
-Beans
+
+Repository for programming project
