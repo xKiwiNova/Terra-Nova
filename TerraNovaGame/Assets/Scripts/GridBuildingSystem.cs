@@ -11,16 +11,15 @@ public class GridBuildingSystem : MonoBehaviour
     private BuildingSO.Direction dir = BuildingSO.Direction.Down; 
     public Transform debugTile;
     public Material ghostMaterial;
+    public List<BuildingSO> buildingList;
 
 
-    public GameObject resourceManager;
-    private ResourceManagement resourceManagement;
-    public GameObject jobManager;
-    private JobSystem jobSystem;
+    public ResourceManagement resourceManagement;
+    public JobSystem jobSystem;
+    public TerrainGenerator terrainGenerator;
+
     private Vector3 lastOrigin;
     private Transform ghostTransform;
-
-    public TerrainGenerator terrainGenerator;
 
     // Start is called before the first frame update
     public class GridObject
@@ -96,6 +95,7 @@ public class GridBuildingSystem : MonoBehaviour
     {
         grid = new Grid<GridObject>(100, 100, 10f, Vector3.zero, (Grid<GridObject> g, int x, int z) => new GridObject(g, x, z));
         ghostTransform = Instantiate(building.buildingGhost, Vector3.zero, Quaternion.Euler(0, building.GetRotationAngle(dir), 0));
+        buildingList = new List<BuildingSO>();
     }
 
     // Update is called once per frame
@@ -130,12 +130,22 @@ public class GridBuildingSystem : MonoBehaviour
         bool canBuild = true;
         foreach(Vector2Int gridPosition in gridPositionList)
         {
+            if(grid.GetGridObject(gridPosition.x, gridPosition.y) == null)
+            {
+                canBuild = false;
+                break;
+            }
             if(!grid.GetGridObject(gridPosition.x, gridPosition.y).CanBuild())
             {
                 canBuild = false;
                 break;
             }
             if(gridPosition.x >= grid.width || gridPosition.y >= grid.height)
+            {
+                canBuild = false;
+                break;
+            }
+            if(terrainGenerator.grid.GetGridObject(gridPosition.x, gridPosition.y).GetTerrainValue() == 0)
             {
                 canBuild = false;
                 break;
@@ -174,9 +184,7 @@ public class GridBuildingSystem : MonoBehaviour
                     // Debug.Log((gridPosition.x) + ",  " + (gridPosition.y) + " has a value of " + grid.GetGridObject(gridPosition.x, gridPosition.y).HasPlacedBuilding() + " and an origin of " + grid.GetGridObject(gridPosition.x, gridPosition.y).GetGridPositionList());
                 }
 
-                ResourceManagement resourceManagement = resourceManager.GetComponent<ResourceManagement>();
-                
-                OnPlaced(building);
+                building.OnPlaced(buildingList, jobSystem.allJobList);
             }
         }
 
@@ -194,7 +202,7 @@ public class GridBuildingSystem : MonoBehaviour
                     grid.GetGridObject(newGridPosition.x, newGridPosition.y).ClearPlacedBuilding();
                    //  Debug.Log((gridPosition.x) + ",  " + (gridPosition.y) + " has a value of " + grid.GetGridObject(gridPosition.x, gridPosition.y).HasPlacedBuilding() + " and an origin of " + grid.GetGridObject(gridPosition.x, gridPosition.y).GetGridPositionList());
                 }
-                OnDestroyed(buildingSO);
+                buildingSO.OnDestroyed(buildingList, jobSystem.allJobList);
                 Destroy(placedBuilding.gameObject);
             }
         }
@@ -207,33 +215,11 @@ public class GridBuildingSystem : MonoBehaviour
         lastOrigin = origin;
     }
 
-    public List<BuildingSO> buildingList;
-
-    public void OnDestroyed(BuildingSO building)
-    {
-        buildingList.Remove(building);
-        foreach(JobSO job in building.jobs)
-        {
-            JobSystem jobSystem = jobManager.GetComponent<JobSystem>();
-            jobSystem.allJobList.Remove(job);
-
-        }
-    }
-
-    public void OnPlaced(BuildingSO building)
-    {
-        buildingList.Add(building);
-        foreach(JobSO job in building.jobs)
-        {
-            JobSystem jobSystem = jobManager.GetComponent<JobSystem>();
-            jobSystem.allJobList.Add(job);
-        }
-    }
 
    
     public void CalculateBuildingIncome()
     {
-        ResourceManagement resourceManagement = resourceManager.GetComponent<ResourceManagement>();
+
         foreach(BuildingSO building in buildingList)
         {
             foreach(BuildingSO.ProducedResource producedResource in building.ProducedResources)

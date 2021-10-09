@@ -35,6 +35,7 @@ public class BuildingSO : ScriptableObject
     public Transform buildingGhost;
     public int width;
     public int height;
+    public string resourceString;
 
     [System.Serializable]
     public class ProducedResource
@@ -54,6 +55,33 @@ public class BuildingSO : ScriptableObject
     }
     public ConsumedResource[] ConsumedResources;
 
+    public void UpdateBuildingResourceString(ResourceManagement resourceManagement)
+    {
+        resourceString = string.Empty;
+        foreach(ProducedResource producedResource in ProducedResources)
+        {
+            ResourceManagement.Resource resource = resourceManagement.GetResourceFromName(producedResource.resource);
+            resourceString += ($"{resource.icon} {resource.name} production + {producedResource.amount * producedResource.modifier}");
+        }
+    }
+
+    public void OnPlaced(List<BuildingSO> buildingList, List<JobSO> allJobList)
+    {
+        buildingList.Add(this);
+        foreach(JobSO job in jobs)
+        {
+            allJobList.Add(job);
+        }
+    }
+
+    public void OnDestroyed(List<BuildingSO> buildingList, List<JobSO> allJobList)
+    {
+        buildingList.Remove(this);
+        foreach(JobSO job in jobs)
+        {
+            allJobList.Remove(job);
+        }
+    }
     
 
     public int GetRotationAngle(Direction dir)

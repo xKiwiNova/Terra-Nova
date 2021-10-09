@@ -571,7 +571,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh16556
+  m_Name: pb_Mesh16622
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -761,6 +761,7 @@ MonoBehaviour:
   food:
     name: 
     amount: 0
+    icon: 
     jobProduction: 0
     jobProductionModifier: 0
     jobConsumption: 0
@@ -782,6 +783,7 @@ MonoBehaviour:
   energy:
     name: 
     amount: 0
+    icon: 
     jobProduction: 0
     jobProductionModifier: 0
     jobConsumption: 0
@@ -803,6 +805,7 @@ MonoBehaviour:
   credits:
     name: 
     amount: 0
+    icon: 
     jobProduction: 0
     jobProductionModifier: 0
     jobConsumption: 0
@@ -821,9 +824,76 @@ MonoBehaviour:
     otherConsumption: 0
     monthlyIncome: 0
     storageCapacity: 0
-  minerals:
+  metals:
     name: 
     amount: 0
+    icon: 
+    jobProduction: 0
+    jobProductionModifier: 0
+    jobConsumption: 0
+    jobConsumptionModifier: 0
+    popProduction: 0
+    popProductionModifier: 0
+    popConsumption: 0
+    popConsumptionModifier: 0
+    buildingProduction: 0
+    buildingProductionModifier: 0
+    buildingConsumption: 0
+    buildingConsumptionModifier: 0
+    baseProduction: 0
+    otherProduction: 0
+    baseConsumption: 0
+    otherConsumption: 0
+    monthlyIncome: 0
+    storageCapacity: 0
+  carbon:
+    name: 
+    amount: 0
+    icon: 
+    jobProduction: 0
+    jobProductionModifier: 0
+    jobConsumption: 0
+    jobConsumptionModifier: 0
+    popProduction: 0
+    popProductionModifier: 0
+    popConsumption: 0
+    popConsumptionModifier: 0
+    buildingProduction: 0
+    buildingProductionModifier: 0
+    buildingConsumption: 0
+    buildingConsumptionModifier: 0
+    baseProduction: 0
+    otherProduction: 0
+    baseConsumption: 0
+    otherConsumption: 0
+    monthlyIncome: 0
+    storageCapacity: 0
+  ammenities:
+    name: 
+    amount: 0
+    icon: 
+    jobProduction: 0
+    jobProductionModifier: 0
+    jobConsumption: 0
+    jobConsumptionModifier: 0
+    popProduction: 0
+    popProductionModifier: 0
+    popConsumption: 0
+    popConsumptionModifier: 0
+    buildingProduction: 0
+    buildingProductionModifier: 0
+    buildingConsumption: 0
+    buildingConsumptionModifier: 0
+    baseProduction: 0
+    otherProduction: 0
+    baseConsumption: 0
+    otherConsumption: 0
+    monthlyIncome: 0
+    storageCapacity: 0
+  gasses:
+    name: 
+    amount: 0
+    icon: 
     jobProduction: 0
     jobProductionModifier: 0
     jobConsumption: 0
@@ -845,6 +915,7 @@ MonoBehaviour:
   nullResource:
     name: 
     amount: 0
+    icon: 
     jobProduction: 0
     jobProductionModifier: 0
     jobConsumption: 0
@@ -1024,8 +1095,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: test <sprite=0>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 960dff62be948f04ca33bec3782e9b47, type: 2}
+  m_sharedMaterial: {fileID: -221619137428270156, guid: 960dff62be948f04ca33bec3782e9b47,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1049,14 +1121,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 4
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1115,8 +1187,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -121.264854, y: -75}
-  m_SizeDelta: {x: 222.33539, y: 150}
+  m_AnchoredPosition: {x: -372.89, y: -12.32}
+  m_SizeDelta: {x: 683.68176, y: 24.600029}
   m_Pivot: {x: 0.45458594, y: 0.5}
 --- !u!1 &619274725
 GameObject:
@@ -1258,8 +1330,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -25}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 41.659, y: -12.31}
+  m_SizeDelta: {x: 83.31787, y: 24.620026}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &763441127
 MonoBehaviour:
@@ -2066,8 +2138,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -47.91, y: -77.66}
-  m_SizeDelta: {x: 100, y: 155.32343}
+  m_AnchoredPosition: {x: -382.45, y: -24.999}
+  m_SizeDelta: {x: 769.08997, y: 50.00171}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1696024642
 MonoBehaviour:
@@ -2082,7 +2154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8235294}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2469,10 +2541,10 @@ MonoBehaviour:
   debugTile: {fileID: 7743654244559019585, guid: d528a36a771e1514fa74b869b842c1ce,
     type: 3}
   ghostMaterial: {fileID: 2100000, guid: 511c7126e0e4bc74f83a0cc3948013eb, type: 2}
-  resourceManager: {fileID: 507542591}
-  jobManager: {fileID: 2145310477}
-  terrainGenerator: {fileID: 1848702444}
   buildingList: []
+  resourceManagement: {fileID: 507542592}
+  jobSystem: {fileID: 2145310478}
+  terrainGenerator: {fileID: 1848702444}
 --- !u!4 &1970029828
 Transform:
   m_ObjectHideFlags: 0

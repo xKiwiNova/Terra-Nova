@@ -36,7 +36,7 @@ MonoBehaviour:
     m_StrikethroughOffset: 0
     m_StrikethroughThickness: 0
     m_TabWidth: 0
-  spriteSheet: {fileID: 2800000, guid: 14f911c8de28fc741b4957df5646fdff, type: 3}
+  spriteSheet: {fileID: 2800000, guid: cad33705524c7ba4c9417f824861b3fd, type: 3}
   m_SpriteCharacterTable:
   - m_ElementType: 2
     m_Unicode: 65534
@@ -140,7 +140,7 @@ MonoBehaviour:
       m_Width: 128
       m_Height: 128
       m_HorizontalBearingX: -32
-      m_HorizontalBearingY: 128
+      m_HorizontalBearingY: 112
       m_HorizontalAdvance: 128
     m_GlyphRect:
       m_X: 0
@@ -154,8 +154,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 128
       m_Height: 128
-      m_HorizontalBearingX: -64
-      m_HorizontalBearingY: 64
+      m_HorizontalBearingX: -32
+      m_HorizontalBearingY: 112
       m_HorizontalAdvance: 128
     m_GlyphRect:
       m_X: 128
@@ -169,8 +169,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 128
       m_Height: 128
-      m_HorizontalBearingX: -64
-      m_HorizontalBearingY: 64
+      m_HorizontalBearingX: -32
+      m_HorizontalBearingY: 112
       m_HorizontalAdvance: 128
     m_GlyphRect:
       m_X: 256
@@ -184,8 +184,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 128
       m_Height: 128
-      m_HorizontalBearingX: -64
-      m_HorizontalBearingY: 64
+      m_HorizontalBearingX: -32
+      m_HorizontalBearingY: 112
       m_HorizontalAdvance: 128
     m_GlyphRect:
       m_X: 384
@@ -199,8 +199,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 128
       m_Height: 128
-      m_HorizontalBearingX: -64
-      m_HorizontalBearingY: 64
+      m_HorizontalBearingX: -32
+      m_HorizontalBearingY: 112
       m_HorizontalAdvance: 128
     m_GlyphRect:
       m_X: 0
@@ -214,8 +214,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 128
       m_Height: 128
-      m_HorizontalBearingX: -64
-      m_HorizontalBearingY: 64
+      m_HorizontalBearingX: -32
+      m_HorizontalBearingY: 112
       m_HorizontalAdvance: 128
     m_GlyphRect:
       m_X: 128
@@ -229,8 +229,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 128
       m_Height: 128
-      m_HorizontalBearingX: -64
-      m_HorizontalBearingY: 64
+      m_HorizontalBearingX: -32
+      m_HorizontalBearingY: 112
       m_HorizontalAdvance: 128
     m_GlyphRect:
       m_X: 256
@@ -397,7 +397,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 14f911c8de28fc741b4957df5646fdff, type: 3}
+        m_Texture: {fileID: 2800000, guid: cad33705524c7ba4c9417f824861b3fd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:

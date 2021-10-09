@@ -60,15 +60,16 @@ public class TimeManagement : MonoBehaviour
             /// GridBuildingSystem gridBuildingSystem = gridBuilder.GetComponent<GridBuildingSystem>()
 
             resourceManagement.ClearProduction();
+            resourceManagement.ClearConsumption();
             jobSystem.CalculateJobIncome();
             resourceManagement.CalculateAllIncome();
             gridBuildingSystem.CalculateBuildingIncome();
         }
 
-        if(monthOfYear == 11)
+        if(monthOfYear == 13)
         {
             year += 1;
-            monthOfYear = 0;
+            monthOfYear = 1;
         }
     
 

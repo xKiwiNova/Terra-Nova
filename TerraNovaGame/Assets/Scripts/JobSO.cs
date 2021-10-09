@@ -6,7 +6,7 @@ using TMPro;
 [CreateAssetMenu(fileName = "Job", menuName = "JobSO/Job")]
 public class JobSO : ScriptableObject
 {
-    public string name; 
+    public string jobName; 
     public bool isOccupied = true;
 
     [System.Serializable]

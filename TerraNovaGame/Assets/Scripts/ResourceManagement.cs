@@ -9,7 +9,11 @@ public class ResourceManagement : MonoBehaviour
     public Resource food;
     public Resource energy;
     public Resource credits;
-    public Resource minerals;
+    public Resource metals;
+    public Resource carbon;
+    public Resource ammenities;
+    public Resource gasses;
+
     public Resource nullResource;
 
     public TextMeshProUGUI resourceText;
@@ -20,6 +24,8 @@ public class ResourceManagement : MonoBehaviour
     {
         public string name;
         public int amount;
+        public string icon;
+
 
         public int jobProduction = 0;
         public float jobProductionModifier = 1.0f;
@@ -45,13 +51,14 @@ public class ResourceManagement : MonoBehaviour
         public int monthlyIncome;
         public int storageCapacity;
 
-        public Resource(string name, int amount, int baseProduction, int baseConsumption, int storageCapacity)
+        public Resource(string name, int amount, int baseProduction, int baseConsumption, int storageCapacity, string icon)
         {
             this.name = name;
             this.amount = amount;
             this.baseProduction = baseProduction;
             this.baseConsumption = baseConsumption;
             this.storageCapacity = storageCapacity;
+            this.icon = icon;
 
             /*this.jobProduction = jobProduction;
             this.jobProductionModifier = jobProductionModifier;
@@ -158,27 +165,44 @@ public class ResourceManagement : MonoBehaviour
     void Awake()
     {
         // Resource(string name, int amount, int baseProduction, int baseConsumption, int storageCapacity)
-        nullResource = new Resource("null", 0, 0, 0, 0);
+        nullResource = new Resource("null", 0, 0, 0, 10000, "<sprite=15>");
         
-        food = new Resource("food", 0, 100, 0, 10000);
-        energy = new Resource("energy", 0, 100, 0, 10000);
-        credits = new Resource("credits", 0, 100, 0, 10000);
-        minerals = new Resource("minerals", 0, 100, 0, 10000);
+        food = new Resource("food", 0, 100, 0, 10000, "<sprite=0>");
+        energy = new Resource("energy", 0, 100, 0, 10000, "<sprite=1>");
+        metals = new Resource("metals", 0, 100, 0, 10000, "<sprite=2>");
+        credits = new Resource("credits", 0, 100, 0, 10000, "<sprite=3>");
+        carbon = new Resource("carbon", 0, 100, 0, 10000, "<sprite=4>");
+        ammenities = new Resource("ammenities", 0, 100, 0, 10000, "<sprite=5>");
+        gasses = new Resource("gasses", 0, 100, 0, 10000, "<sprite=6>");
 
-        Resource[] resources = {food, energy, credits, minerals};
+        Resource[] resources = {food, energy, credits, metals, carbon, ammenities, gasses};
         resourceList = new List<Resource>(resources);
         UpdateResourceUI();
+    }
+
+    public string IntToString(int i)
+    {
+            
+        if (i > -1000 && i < 1000) {return i.ToString();} // If int is between 1000 and -1000, just return itself.
+        else if ((i >= 1000 && i < 1000000) || (i <= -1000 && i > -1000000)) {return ($"{i / 1000}K");} // If int is in the thousands, return its thousands value (1k , 34k, 420k)
+        else if ((i >= 1000000 && i < 1000000000) || (i <= -1000000 && i > -1000000000)) {return ($"{i / 1000000}M");} // If int is in the millions, return its millions value (1M , 34M, 420k)
+        else {return ($"{i / 1000000000}B");}
     }
 
     public Resource GetResourceFromName(string name)
     {
         switch(name)
         {
-            default: return nullResource;
-            case "food": return food; break;
-            case "energy": return energy; break;
-            case "credits": return credits; break;
-            case "minerals": return minerals; break;
+            default: 
+                Debug.Log("NullResourceError!");
+                return nullResource;
+            case "food": return food;
+            case "energy": return energy;
+            case "credits": return credits;
+            case "metals": return metals;
+            case "carbon": return carbon;
+            case "ammenities": return ammenities;
+            case "gasses": return gasses;
         }
         
     }
@@ -190,6 +214,18 @@ public class ResourceManagement : MonoBehaviour
             resource.jobProduction = 0;
             resource.popProduction = 0;
             resource.buildingProduction = 0;
+            resource.otherProduction = 0;
+        }
+    }
+
+    public void ClearConsumption()
+    {
+        foreach(Resource resource in resourceList)
+        {
+            resource.jobConsumption = 0;
+            resource.popConsumption = 0;
+            resource.buildingConsumption = 0;
+            resource.otherConsumption = 0;
         }
     }
 
@@ -232,7 +268,7 @@ public class ResourceManagement : MonoBehaviour
         resourceString = string.Empty;
         foreach(Resource resource in resourceList)
         {
-            resourceString += ($"<sprite={resourceList.IndexOf(resource)}> {resource.amount} + {resource.monthlyIncome} \n");
+            resourceString += ($"{resource.icon} {IntToString(resource.amount)} + {IntToString(resource.monthlyIncome)}     ");
         }
         resourceText.text = resourceString;
     }
