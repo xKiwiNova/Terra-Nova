@@ -10,8 +10,8 @@ public class HexGrid : MonoBehaviour
     public TextMeshProUGUI cellLabelPrefab;
     Canvas gridCanvas;
 
-    public int width = 10;
-	public int height = 6;
+    public int width = 50;
+	public int height = 50;
 
 	public HexCell cellPrefab;
     
@@ -81,17 +81,23 @@ public class HexGrid : MonoBehaviour
         // A debug tool to see the coordinates of each cell. Turn debugGridCoords to see it.
         TextMeshProUGUI label = Instantiate<TextMeshProUGUI>(cellLabelPrefab);
         label.rectTransform.SetParent(gridCanvas.transform, false);
-        label.rectTransform.anchoredPosition = new Vector2(position.x - 20, position.z);
+        label.rectTransform.anchoredPosition = new Vector2(position.x -2, position.z);
         label.text = cell.coordinates.ToStringOnSeparateLines();
 
         if(debugGridCoords){ label.enabled = true; }
         else{label.enabled = false;}
+
+        cell.uiRect = label.rectTransform;
 	}
 
     void Start()
     {
         hexMesh.Triangulate(cells);
     }
+
+    public void Refresh (){
+		hexMesh.Triangulate(cells);
+	}
 
     void Update() 
     {
@@ -108,7 +114,7 @@ public class HexGrid : MonoBehaviour
     }
 	
     // Colors the cell when touched.
-	public HexCell TouchCell(Vector3 position) 
+	public HexCell GetCell(Vector3 position) 
     {
 		position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromPosition(position);
@@ -119,7 +125,7 @@ public class HexGrid : MonoBehaviour
 	}
 
     public void ColorCell(Vector3 position, Color color){
-        HexCell cell = TouchCell(position);
+        HexCell cell = GetCell(position);
         cell.color = color;
 		hexMesh.Triangulate(cells);
     }
@@ -128,4 +134,6 @@ public class HexGrid : MonoBehaviour
         cell.color = color;
 		hexMesh.Triangulate(cells);
     }
+
+    
 }
