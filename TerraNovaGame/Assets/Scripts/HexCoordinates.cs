@@ -31,21 +31,26 @@ public struct HexCoordinates {
 		}
 	}
 
+	// Generates these new hex coordinates based on a hex coordinate on an (X, Z) grid.
     public static HexCoordinates FromOffsetCoordinates (int x, int z) {
 		return new HexCoordinates(x - z / 2, z);
 	}
 
+	// (X, Y, Z)
     public override string ToString () {
 		return "(" +
 			X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
 	}
 
+	// X
+	// Y
+	// Z
 	public string ToStringOnSeparateLines () {
 		return X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
 	}
 
 
-    // Gets the cell touched based on a Vector3
+    // Gets the cell based on a Vector3
     public static HexCoordinates FromPosition (Vector3 position) {
 		float x = position.x / (HexMetrics.innerRadius * 2f);
 		float y = -x;
