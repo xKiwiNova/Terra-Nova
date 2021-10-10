@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class HexMetrics {
 
-    public const float outerRadius = 100f; // Outer radius, distance from the center to its corners.
+    public const float outerRadius = 50f; // Outer radius, distance from the center to its corners.
     public const float innerRadius = outerRadius * 0.866025404f; // Inner radius, distance from the center to its side. 3rt2 * outer radius.
 
     public static Vector3[] corners = { // Stores  the corners of the hexagon as Vector3 positions

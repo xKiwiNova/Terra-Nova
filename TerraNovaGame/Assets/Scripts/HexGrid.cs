@@ -28,10 +28,11 @@ public class HexGrid : MonoBehaviour
         gridCanvas = GetComponentInChildren<Canvas>();
 		hexMesh = GetComponentInChildren<HexMesh>();
 
-        for (int x = 0, i = 0; x < width; x++) 
-        {
-		    for (int z = 0; z < height; z++) 
+        for (int z = 0, i = 0; z < height; z++) 
             {
+            for (int x = 0; x < width; x++) 
+            {
+		    
 				CreateCell(x, z, i++);
 			}
 		}
@@ -59,7 +60,7 @@ public class HexGrid : MonoBehaviour
         // A debug tool to see the coordinates of each cell. Turn debugGridCoords to see it.
         TextMeshProUGUI label = Instantiate<TextMeshProUGUI>(cellLabelPrefab);
         label.rectTransform.SetParent(gridCanvas.transform, false);
-        label.rectTransform.anchoredPosition = new Vector2(position.x - 25, position.z);
+        label.rectTransform.anchoredPosition = new Vector2(position.x - 20, position.z);
         label.text = cell.coordinates.ToStringOnSeparateLines();
 
         if(debugGridCoords){ label.enabled = true; }
@@ -95,8 +96,10 @@ public class HexGrid : MonoBehaviour
 		position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 		Debug.Log("touched at " + coordinates.ToString());
+
         int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
 		HexCell cell = cells[index];
+        Debug.Log(cell.coordinates.ToString());
 		cell.color = touchedColor;
 		hexMesh.Triangulate(cells);
 	}
