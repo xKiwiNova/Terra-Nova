@@ -15,11 +15,11 @@ public class HexGrid : MonoBehaviour
     public HexCell cellPrefab;
     HexCell[] cells;
 
+    public HexGridChunk chunkPrefab;
+    HexGridChunk[] chunks;
+
     public TextMeshProUGUI cellLabelPrefab;
     bool debugMode = true;
-
-    Canvas gridCanvas;
-    HexMesh hexMesh;
 
     public Color defaultColor = Color.white;
     public Color touchedColor = Color.green;
@@ -34,27 +34,42 @@ public class HexGrid : MonoBehaviour
         cellCountX = chunkCountX * HexMetrics.chunkSizeX;
         cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
 
-        gridCanvas = GetComponentInChildren<Canvas>();
-        hexMesh = GetComponentInChildren<HexMesh>();
-
         
         elevationNoiseMap = NoiseMap.GenerateNoiseMap(
             cellCountX, cellCountZ, 
             Random.Range(0, 99999), 
-            Random.Range(5.0f, 10.0f), 
+            Random.Range(10.0f, 20.0f), 
             4, .5f, 2);
 
         precipitationNoiseMap = NoiseMap.GenerateNoiseMap(
             cellCountX, cellCountZ, 
             Random.Range(0, 99999), 
-            Random.Range(5.0f, 10.0f), 
+            Random.Range(10.0f, 20.0f), 
             4, .5f, 2);
         
         temperatureNoiseMap = NoiseMap.GenerateNoiseMap(
             cellCountX, cellCountZ, 
             Random.Range(0, 99999), 
-            Random.Range(5.0f, 10.0f), 
+            Random.Range(15.0f, 25.0f), 
             4, .5f, 2);
+
+        CreateChunks();
+        CreateCells();
+    }
+
+    void CreateChunks()
+    {
+        chunks = new HexGridChunk[chunkCountX * chunkCountZ];
+
+        for(int z = 0, i = 0; z < chunkCountZ; z++)
+        {
+            for(int x = 0; x < chunkCountX; x++)
+            {
+                HexGridChunk chunk = chunks[i++] = Instantiate(chunkPrefab);
+				chunk.transform.SetParent(transform);
+                chunk.name = $"Chunk ({x}, {z})";
+            }
+        }
     }
 
     void CreateCells()
@@ -68,11 +83,6 @@ public class HexGrid : MonoBehaviour
                 CreateCell(x, z, i++);
             }
         }
-    }
-
-    void Start()
-    {
-        hexMesh.Triangulate(cells);
     }
 
     void OnEnable()
@@ -126,11 +136,6 @@ public class HexGrid : MonoBehaviour
     
     }
 
-    public void Refresh()
-    {
-        hexMesh.Triangulate(cells);
-    }
-
     // Given an inputed (x, z), the program can instantiate a new cell and append it to the list of cells.
     void CreateCell(int x, int z, int i)
     {
@@ -143,13 +148,13 @@ public class HexGrid : MonoBehaviour
 
         HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
 
-        cell.transform.SetParent(transform, false); // The transforms worldposition is relative, not absolute.
+        // cell.transform.SetParent(transform, false); // The transforms worldposition is relative, not absolute.
         cell.transform.localPosition = position;
 
         cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 
         // Creating the terrain data
-        cell.color = defaultColor;
+        cell.Color = defaultColor;
 
         
 
@@ -184,7 +189,7 @@ public class HexGrid : MonoBehaviour
 
         // Shows the Coordinates of each tile
         TextMeshProUGUI text = Instantiate<TextMeshProUGUI>(cellLabelPrefab);
-        text.rectTransform.SetParent(gridCanvas.transform, false);
+        // text.rectTransform.SetParent(gridCanvas.transform, false);
         text.rectTransform.anchoredPosition = new Vector2(position.x - 3.5f, position.z - 4f);
 		text.text = cell.coordinates.ToColorStringOnSeperateLines();
         text.name = $"Label {cell.coordinates.ToString()}";
@@ -200,5 +205,18 @@ public class HexGrid : MonoBehaviour
         int temperature = (int)((temperatureNoiseMap[x, z] + 0.02f) * 12);
 
         cell.GenerateTerrainData(elevation, precipitation, temperature);
+        AddCellToChunk(x, z, cell);
+    }
+
+    void AddCellToChunk(int x, int z, HexCell cell)
+    {
+        int chunkX = x / HexMetrics.chunkSizeX;
+        int chunkZ = z / HexMetrics.chunkSizeZ;
+
+        HexGridChunk chunk = chunks[chunkX + chunkZ * chunkCountX];
+
+        int localX = x - chunkX * HexMetrics.chunkSizeX;
+		int localZ = z - chunkZ * HexMetrics.chunkSizeZ;
+		chunk.AddCell(localX + localZ * HexMetrics.chunkSizeX, cell);
     }
 }

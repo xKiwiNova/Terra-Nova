@@ -6,9 +6,9 @@ using UnityEngine;
 public class HexMesh : MonoBehaviour
 {
     Mesh hexMesh;
-    List<Vector3> vertices;
-    List<int> triangles;
-    List<Color> colors;
+    static List<Vector3> vertices = new List<Vector3>();
+    static List<int> triangles = new List<int>();
+    static List<Color> colors = new List<Color>();
     MeshCollider meshCollider;
  
     void Awake()
@@ -60,7 +60,7 @@ public class HexMesh : MonoBehaviour
 
         // Adds the "Solid" (Not Blended) part  of the triangle.
 		AddTriangle(center, vertex1, vertex2);
-        AddTriangleColor(cell.color, cell.color, cell.color);
+        AddTriangleColor(cell.Color, cell.Color, cell.Color);
 
         // Creates a quad with the edges blending. The outermost vertices are the average of the cell and neighbor.
 
@@ -98,11 +98,11 @@ public class HexMesh : MonoBehaviour
             vertex5.y = nextNeighbor.Position.y;
 
             AddTriangle(vertex2, vertex4, vertex5);
-            AddTriangleColor(cell.color, neighbor.color, nextNeighbor.color);
+            AddTriangleColor(cell.Color, neighbor.Color, nextNeighbor.Color);
         }
 
         AddQuad(vertex1, vertex2, vertex3, vertex4);
-        AddQuadColor(cell.color, neighbor.color);
+        AddQuadColor(cell.Color, neighbor.Color);
 
         // The final edge triangles on either side of the quad to make up the rest of the trapezoid and finish the triangle.
         /*

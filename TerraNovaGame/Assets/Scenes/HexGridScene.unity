@@ -150,9 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe27540b795c3a4aabcdf3c7d23af4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 24
-  height: 24
+  chunkCountX: 12
+  chunkCountZ: 12
   cellPrefab: {fileID: 945548962812935816, guid: e4a5b219b3cced946902b08eafbe3d01,
+    type: 3}
+  chunkPrefab: {fileID: 6337438955866180332, guid: 97a85be2efbd31a4b8b6b6300b4448b8,
     type: 3}
   cellLabelPrefab: {fileID: 575622550394806766, guid: fd455addb69f2c54691b889fc70b9733,
     type: 3}

@@ -10,9 +10,10 @@ public class HexCell : MonoBehaviour
     [SerializeField]
     HexCell[] neighbors = new HexCell[6];
     public HexCoordinates coordinates;
-    public Color color;
+    private Color color;
     public RectTransform debugUIRect;
     public TerrainData terrainData;
+    public HexGridChunk chunk;
 
     public int elevation
     {
@@ -44,6 +45,22 @@ public class HexCell : MonoBehaviour
         }
     }
 
+    public Color Color
+    {
+        get 
+        {
+			return color;
+		}
+		set {
+			if (color == value) 
+            {
+				return;
+			}
+			color = value;
+			Refresh();
+		}
+    }
+
     public HexCell GetNeighbor(HexDirection direction)
     {
         return neighbors[(int)direction];
@@ -62,5 +79,21 @@ public class HexCell : MonoBehaviour
 
         // color = Color.HSVToRGB((float)(elevation / 20.0f - .04), 0.8f, 0.8f);
         color = Color.HSVToRGB((float)(elevation / 18.0f - .04), 0.8f, 0.8f);
+    }
+
+    public void Refresh()
+    {
+        if(chunk)
+        {
+            chunk.Refresh();
+            for(int i = 0; i < neighbors.Length; i++)
+            {
+                HexCell neighbor = neighbors[i];
+                if(neighbor != null && neighbor.chunk != chunk) 
+                {
+					neighbor.chunk.Refresh();
+				}
+            }
+        }
     }
 }
