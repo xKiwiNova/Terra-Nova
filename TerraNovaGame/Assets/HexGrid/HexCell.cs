@@ -19,7 +19,7 @@ public class HexCell : MonoBehaviour
     {
         get
         {
-            return this.terrainData.elevation;
+            return terrainData.elevation;
         }
         set
         {
@@ -34,6 +34,30 @@ public class HexCell : MonoBehaviour
             Vector3 uiPosition = debugUIRect.localPosition;
 			uiPosition.z = -position.y;
 			debugUIRect.localPosition = uiPosition;
+        }
+    }
+
+    public int precipitation
+    {
+        get
+        {
+            return terrainData.precipitation;
+        }
+        set
+        {
+            terrainData.precipitation = value;
+        }
+    }
+
+    public int temperature
+    {
+        get
+        {
+            return terrainData.temperature;
+        }
+        set
+        {
+            terrainData.temperature = value;
         }
     }
 
@@ -72,12 +96,19 @@ public class HexCell : MonoBehaviour
         cell.neighbors[(int)direction.Opposite()] = this;
     }
 
-    public void GenerateTerrainData(int elevation, int percipitation, int temperature)
+    public void GenerateTerrainData()
     {
-        terrainData = new TerrainData(elevation, percipitation, temperature);
-        this.elevation = elevation;
+        terrainData = new TerrainData();
 
         // color = Color.HSVToRGB((float)(elevation / 20.0f - .04), 0.8f, 0.8f);
+    }
+
+    public void UpdateTerrainData(int elevation, int precipitation, int temperature)
+    {
+        this.elevation = elevation;
+        this.precipitation = precipitation;
+        this.temperature = temperature;
+
         color = Color.HSVToRGB((float)(elevation / 18.0f - .04), 0.8f, 0.8f);
     }
 
@@ -95,5 +126,10 @@ public class HexCell : MonoBehaviour
 				}
             }
         }
+    }
+
+    public void RefreshSelfOnly()
+    {
+        chunk.Refresh();
     }
 }

@@ -8,10 +8,11 @@ public class TerrainData
     public int precipitation;
     public int temperature;
 
-    public TerrainData(int elevation, int precipitation, int temperature)
+    public bool hasIncomingRiver;
+    public bool hasOutgoingRiver;
+
+    public TerrainData()
     {
-        this.elevation = elevation;
-        this.precipitation = precipitation;
-        this.temperature = temperature;
+        
     }
 }

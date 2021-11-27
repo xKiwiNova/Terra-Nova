@@ -204,7 +204,8 @@ public class HexGrid : MonoBehaviour
         int precipitation = (int)((precipitationNoiseMap[x, z] + 0.02f) * 12);
         int temperature = (int)((temperatureNoiseMap[x, z] + 0.02f) * 12);
 
-        cell.GenerateTerrainData(elevation, precipitation, temperature);
+        cell.GenerateTerrainData();
+        cell.UpdateTerrainData(elevation, precipitation, temperature);
         AddCellToChunk(x, z, cell);
     }
 

@@ -9,16 +9,16 @@ public static class HexMetrics
     public const float innerRadius = outerRadius * 0.866025404f; // The distance between the center to the sides (rt3 / 2)
 
     // 75% of the hexagon is a solid color, but 25% is blended with its neighbors
-    public const float solidFactor = 0.75f;
+    public const float solidFactor = 0.9f;
     public const float blendFactor = 1 - solidFactor;
 
-    public const float elevationStep = .75f;
-    public const float elevationPerturbStrength = .25f;
+    public const float elevationStep = 1.5f;
+    public const float elevationPerturbStrength = .5f;
 
     public static Texture2D noiseMap = new Texture2D(512, 512);
     public static float cellPerturbStrength = 5f;
 
-    public const int chunkSizeX = 6;
+    public const int chunkSizeX = 6; 
     public const int chunkSizeZ = 6;
 
     public static Vector3[] corners =
