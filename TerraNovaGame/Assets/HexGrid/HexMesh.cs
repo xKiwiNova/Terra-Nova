@@ -10,6 +10,7 @@ public class HexMesh : MonoBehaviour
     static List<int> triangles = new List<int>();
     static List<Color> colors = new List<Color>();
     MeshCollider meshCollider;
+
  
     void Awake()
     {
@@ -58,9 +59,11 @@ public class HexMesh : MonoBehaviour
         Vector3 vertex1 = center + HexMetrics.GetFirstSolidCorner(direction);
         Vector3 vertex2 = center + HexMetrics.GetSecondSolidCorner(direction);
 
+        Color color = cell.GetColor(direction);
+
         // Adds the "Solid" (Not Blended) part  of the triangle.
 		AddTriangle(center, vertex1, vertex2);
-        AddTriangleColor(cell.Color, cell.Color, cell.Color);
+        AddTriangleColor(color, color, color);
 
         // Creates a quad with the edges blending. The outermost vertices are the average of the cell and neighbor.
 
@@ -78,48 +81,38 @@ public class HexMesh : MonoBehaviour
         Vector3 vertex3 = vertex1 + bridge;
         Vector3 vertex4 = vertex2 + bridge;
 
+        Color color = cell.GetColor(direction);
+
         HexCell neighbor = cell.GetNeighbor(direction);
-        
         if(neighbor == null)
         {
             return;
         }
-
-        // vertex3.y = vertex4.y = neighbor.elevation * HexMetrics.elevationStep; 
+        Color color2 = neighbor.GetColor(direction.Opposite());
         vertex3.y = vertex4.y = neighbor.Position.y; 
 
-        HexCell prevNeighbor = cell.GetNeighbor(direction.Previous()) ?? cell;
         HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
-
         if(direction <= HexDirection.E && nextNeighbor != null)
         {
             Vector3 vertex5 = vertex2 + HexMetrics.GetBridge(direction.Next());
-            // vertex5.y = nextNeighbor.elevation * HexMetrics.elevationStep;
             vertex5.y = nextNeighbor.Position.y;
+            Color color3 = nextNeighbor.GetColor(direction.Next().Opposite());
 
             AddTriangle(vertex2, vertex4, vertex5);
-            AddTriangleColor(cell.Color, neighbor.Color, nextNeighbor.Color);
+            AddTriangleColor(color, color2, color3);
         }
 
         AddQuad(vertex1, vertex2, vertex3, vertex4);
-        AddQuadColor(cell.Color, neighbor.Color);
-
-        // The final edge triangles on either side of the quad to make up the rest of the trapezoid and finish the triangle.
-        /*
-        AddTriangle(vertex1, center + HexMetrics.GetFirstCorner(direction), vertex3);
-        AddTriangleColor(cell.color, (cell.color + prevNeighbor.color + neighbor.color) / 3f, bridgeColor);
-
-        AddTriangle(vertex2, vertex4, center + HexMetrics.GetSecondCorner(direction));
-		AddTriangleColor(cell.color, bridgeColor, (cell.color + neighbor.color + nextNeighbor.color) / 3f);*/
+        AddQuadColor(color, color2);
     }
 
     // Given 3 vertex positions, adds the vertices in order to form a triangle.
     void AddTriangle(Vector3 vertex1, Vector3 vertex2, Vector3 vertex3)
     {
         int vertexIndex = vertices.Count;
-        vertices.Add(Perturb(vertex1));
-        vertices.Add(Perturb(vertex2));
-        vertices.Add(Perturb(vertex3));
+        vertices.Add(vertex1);
+        vertices.Add(vertex2);
+        vertices.Add(vertex3);
 
         triangles.Add(vertexIndex);
         triangles.Add(vertexIndex + 1);
@@ -138,10 +131,10 @@ public class HexMesh : MonoBehaviour
     void AddQuad(Vector3 vertex1, Vector3 vertex2, Vector3 vertex3, Vector3 vertex4)
     {
         int vertexIndex = vertices.Count;
-		vertices.Add(Perturb(vertex1));
-		vertices.Add(Perturb(vertex2));
-		vertices.Add(Perturb(vertex3));
-		vertices.Add(Perturb(vertex4));
+		vertices.Add(vertex1);
+		vertices.Add(vertex2);
+		vertices.Add(vertex3);
+		vertices.Add(vertex4);
 		triangles.Add(vertexIndex);
 		triangles.Add(vertexIndex + 2);
 		triangles.Add(vertexIndex + 1);
@@ -168,9 +161,8 @@ public class HexMesh : MonoBehaviour
     Vector3 Perturb(Vector3 position)
     {
         Vector4 sample = HexMetrics.SampleNoise(position);
-        position.x += sample.x * 2f - 1f * HexMetrics.cellPerturbStrength;
-        // position.y += sample.y * 2f - 1f * HexMetrics.cellPerturbStrength;;
-        position.z += sample.z * 2f - 1f * HexMetrics.cellPerturbStrength;;
+        position.x += (sample.x * 2f - 1f) * HexMetrics.cellPerturbStrength;
+        position.z += (sample.z * 2f - 1f) * HexMetrics.cellPerturbStrength;
         return position;
     }
 }

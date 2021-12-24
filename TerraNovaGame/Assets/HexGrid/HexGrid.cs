@@ -28,13 +28,19 @@ public class HexGrid : MonoBehaviour
     float[,] precipitationNoiseMap;
     float[,] temperatureNoiseMap;
 
+    public GameObject waterPlane;
+    public ForestGeneration forestGeneration;
+
     
     void Awake()
     {   
         cellCountX = chunkCountX * HexMetrics.chunkSizeX;
         cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
 
-        
+        waterPlane.transform.localPosition = new Vector3((cellCountX * HexMetrics.innerRadius), 8, (cellCountZ * HexMetrics.innerRadius));
+        waterPlane.transform.localScale = new Vector3((cellCountX * HexMetrics.innerRadius / 4f), 1, (cellCountZ * HexMetrics.innerRadius / 4f));
+
+
         elevationNoiseMap = NoiseMap.GenerateNoiseMap(
             cellCountX, cellCountZ, 
             Random.Range(0, 99999), 
@@ -55,6 +61,7 @@ public class HexGrid : MonoBehaviour
 
         CreateChunks();
         CreateCells();
+        forestGeneration.GenerateForest(cells);
     }
 
     void CreateChunks()
@@ -74,7 +81,7 @@ public class HexGrid : MonoBehaviour
 
     void CreateCells()
     {
-         cells = new HexCell[cellCountX * cellCountZ];
+        cells = new HexCell[cellCountX * cellCountZ];
 
         for(int z = 0, i = 0; z < cellCountZ; z++)
         {
@@ -90,34 +97,26 @@ public class HexGrid : MonoBehaviour
         float[,] map1 = NoiseMap.GenerateNoiseMap(
             512, 512, 
             Random.Range(0, 99999), 
-            Random.Range(5.0f, 10.0f), 
+            Random.Range(30.0f, 40.0f), 
             4, .5f, 2);
             
         float[,] map2 = NoiseMap.GenerateNoiseMap(
             512, 512, 
             Random.Range(0, 99999), 
-            Random.Range(5.0f, 10.0f), 
+            Random.Range(30.0f, 40.0f), 
             4, .5f, 2);
 
         float[,] map3 = NoiseMap.GenerateNoiseMap(
             512, 512, 
             Random.Range(0, 99999), 
-            Random.Range(5.0f, 10.0f), 
+            Random.Range(30.0f, 40.0f), 
             4, .5f, 2);
-
-        float[,] map4 = NoiseMap.GenerateNoiseMap(
-            512, 512, 
-            Random.Range(0, 99999), 
-            Random.Range(5.0f, 10.0f), 
-            4, .5f, 2);
-
-        Vector4[] noiseData = new Vector4[512]; 
 
         for(int i = 0; i < 512; i++)
         {
             for(int j = 0; j < 512; j++)
             {
-                HexMetrics.noiseMap.SetPixel(i, j, new Color(map1[i, j], map2[i, j],  map3[i, j],  map4[i, j]));
+                HexMetrics.noiseMap[i, j] = new Vector3(map1[i, j], map2[i, j],  map3[i, j]);
             }
         }
     }
@@ -190,7 +189,7 @@ public class HexGrid : MonoBehaviour
         // Shows the Coordinates of each tile
         TextMeshProUGUI text = Instantiate<TextMeshProUGUI>(cellLabelPrefab);
         // text.rectTransform.SetParent(gridCanvas.transform, false);
-        text.rectTransform.anchoredPosition = new Vector2(position.x - 3.5f, position.z - 4f);
+        text.rectTransform.anchoredPosition = new Vector2(position.x - 0.5f, position.z + 1f);
 		text.text = cell.coordinates.ToColorStringOnSeperateLines();
         text.name = $"Label {cell.coordinates.ToString()}";
         cell.debugUIRect = text.rectTransform;

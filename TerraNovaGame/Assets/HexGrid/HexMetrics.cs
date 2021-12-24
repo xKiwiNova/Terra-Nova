@@ -15,8 +15,8 @@ public static class HexMetrics
     public const float elevationStep = 1.5f;
     public const float elevationPerturbStrength = .5f;
 
-    public static Texture2D noiseMap = new Texture2D(512, 512);
-    public static float cellPerturbStrength = 5f;
+    public static Vector3[,] noiseMap = new Vector3[512, 512];
+    public static float cellPerturbStrength = 4f;
 
     public const int chunkSizeX = 6; 
     public const int chunkSizeZ = 6;
@@ -62,8 +62,18 @@ public static class HexMetrics
         return (corners[(int)direction] + corners[(int)direction + 1]) * blendFactor;
     }
 
-    public static Vector4 SampleNoise(Vector3 position)
+    public static Vector3 SampleNoise(Vector3 position)
     {
-        return noiseMap.GetPixelBilinear(position.x, position.z);
+        // Debug.Log(noiseMap.GetPixel((int)position.x % 512, (int)position.z % 512));
+        
+        try
+        {
+            return noiseMap[Mathf.Abs((int)position.x % 512), Mathf.Abs((int)position.z % 512)];
+        }
+        catch
+        {
+            Debug.Log($"{(int)position.x % 512}, {(int)position.z % 512}");
+            return new Vector3(.5f, .5f, .5f);
+        }
     }
 }

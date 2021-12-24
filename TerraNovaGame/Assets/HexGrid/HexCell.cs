@@ -15,6 +15,10 @@ public class HexCell : MonoBehaviour
     public TerrainData terrainData;
     public HexGridChunk chunk;
 
+    public Color[] triangleColors = new Color[6];
+
+    public List<GameObject> forestElements = new List<GameObject>();
+
     public int elevation
     {
         get
@@ -80,9 +84,39 @@ public class HexCell : MonoBehaviour
             {
 				return;
 			}
-			color = value;
+            color = value;
+
+            for(int i = 0; i < 6; i++)
+            {
+                Color tColor = color * Random.Range(.9f, 1.1f);
+                triangleColors[i] = color * Random.Range(.9f, 1.1f);
+                HexCell neighbor = GetNeighbor((HexDirection)i);
+                if(neighbor != null && EqualsInRange(color, neighbor.Color, .05f))
+                {
+                    neighbor.SetColor(((HexDirection)i).Opposite(), color);
+                }
+            }
 			Refresh();
 		}
+    }
+
+    public Color GetColor(HexDirection direction)
+    {
+        return triangleColors[(int)direction];
+    }
+    public void SetColor(HexDirection direction, Color color)
+    {
+        triangleColors[(int)direction] = color;
+    }
+
+
+    public bool EqualsInRange(Color color1, Color color2, float range)
+    {
+        return(
+            Mathf.Abs(color1.r - color2.r) <= range &&
+            Mathf.Abs(color1.g - color2.g) <= range &&
+            Mathf.Abs(color1.b - color2.b) <= range
+            );
     }
 
     public HexCell GetNeighbor(HexDirection direction)
@@ -109,7 +143,7 @@ public class HexCell : MonoBehaviour
         this.precipitation = precipitation;
         this.temperature = temperature;
 
-        color = Color.HSVToRGB((float)(elevation / 18.0f - .04), 0.8f, 0.8f);
+        Color = Color.HSVToRGB((float)(elevation / 18.0f - .04), 0.8f, 0.8f);
     }
 
     public void Refresh()
