@@ -65,7 +65,7 @@ public class HexMapEditor : MonoBehaviour
         }
     }
 
-    void EditCell(HexCell cell)
+    void EditCell(Cell cell)
     {
         cell.Color = activeColor;
         cell.elevation = activeElevation;

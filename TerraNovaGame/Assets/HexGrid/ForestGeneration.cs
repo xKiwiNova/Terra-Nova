@@ -30,15 +30,15 @@ public class ForestGeneration : MonoBehaviour
         }
     }
 
-    public void GenerateForest(HexCell[] cells)
+    public void GenerateForest(Cell[] cells)
     {
-        foreach (HexCell cell in cells)
+        foreach (Cell cell in cells)
         {
             GenerateTrees(cell);
         }
     }
 
-    public void GenerateTrees(HexCell cell)
+    public void GenerateTrees(Cell cell)
     {
         Vector3 startPosition = new Vector3(cell.Position.x - (HexMetrics.innerRadius), cell.Position.y, cell.Position.z - HexMetrics.outerRadius);
         float elementSpacing = 5;
@@ -58,7 +58,7 @@ public class ForestGeneration : MonoBehaviour
                     Vector3 scale = Vector3.one * Random.Range(85.0f, 115.0f);
                     try
                     {
-                        HexCell newCell = grid.GetCell(position);
+                        Cell newCell = grid.GetCell(position);
                         if(newCell.elevation == cell.elevation)
                         {
                             GameObject newElement = Instantiate(forestElement.GetRandomPrefab(), position, Quaternion.Euler(-90, UnityEngine.Random.Range(0, 360), 0));

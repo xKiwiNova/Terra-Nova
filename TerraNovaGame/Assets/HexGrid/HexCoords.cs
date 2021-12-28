@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct HexCoordinates
+public struct HexCoords
 {
     public int X
     {
@@ -26,15 +26,15 @@ public struct HexCoordinates
     }
 
     // The Hex Coordinates are stored on 3 axes: X (Northeast-Southwest), Y (Northwest-Southeast) Z (East-West),
-    public HexCoordinates(int x, int z)
+    public HexCoords(int x, int z)
     {
         X = x;
         Z = z;
     }
 
-    public static HexCoordinates FromOffsetCoordinates(int x, int z)
+    public static HexCoords FromOffsetCoordinates(int x, int z)
     {
-        return new HexCoordinates((x - (z/2)), z); // Undoing the horizontal shift 
+        return new HexCoords((x - (z/2)), z); // Undoing the horizontal shift 
     }
 
     public override string ToString()
@@ -52,7 +52,7 @@ public struct HexCoordinates
         return "<#D00000>" + X.ToString() + "</color>\n<#00D000>" + Y.ToString() + "</color>\n<#0000D0>" +  Z.ToString() + "</color>";
     }
 
-    public static HexCoordinates FromPosition(Vector3 position)
+    public static HexCoords FromPosition(Vector3 position)
     {
         float offset = position.z / (HexMetrics.outerRadius * 3f);
         float x = (position.x / (HexMetrics.innerRadius * 2f)); // Getting x based on diameter.
@@ -82,6 +82,6 @@ public struct HexCoordinates
             }
         }
 
-        return new HexCoordinates(xInt, zInt);
+        return new HexCoords(xInt, zInt);
     }
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 
 // Stores and holds information about each Cell
-public class HexCell : MonoBehaviour
+public class Cell : MonoBehaviour
 {
 
     [SerializeField]
-    HexCell[] neighbors = new HexCell[6];
-    public HexCoordinates coordinates;
+    Cell[] neighbors = new Cell[6];
+    public HexCoords coordinates;
     private Color color;
     public RectTransform debugUIRect;
     public TerrainData terrainData;
@@ -90,7 +90,7 @@ public class HexCell : MonoBehaviour
             {
                 Color tColor = color * Random.Range(.9f, 1.1f);
                 triangleColors[i] = color * Random.Range(.9f, 1.1f);
-                HexCell neighbor = GetNeighbor((HexDirection)i);
+                Cell neighbor = GetNeighbor((HexDirection)i);
                 if(neighbor != null && EqualsInRange(color, neighbor.Color, .05f))
                 {
                     neighbor.SetColor(((HexDirection)i).Opposite(), color);
@@ -119,12 +119,12 @@ public class HexCell : MonoBehaviour
             );
     }
 
-    public HexCell GetNeighbor(HexDirection direction)
+    public Cell GetNeighbor(HexDirection direction)
     {
         return neighbors[(int)direction];
     }
 
-    public void SetNeighbor(HexDirection direction, HexCell cell)
+    public void SetNeighbor(HexDirection direction, Cell cell)
     {
         neighbors[(int)direction] = cell;
         cell.neighbors[(int)direction.Opposite()] = this;
@@ -153,7 +153,7 @@ public class HexCell : MonoBehaviour
             chunk.Refresh();
             for(int i = 0; i < neighbors.Length; i++)
             {
-                HexCell neighbor = neighbors[i];
+                Cell neighbor = neighbors[i];
                 if(neighbor != null && neighbor.chunk != chunk) 
                 {
 					neighbor.chunk.Refresh();

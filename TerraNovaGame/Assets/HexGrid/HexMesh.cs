@@ -23,7 +23,7 @@ public class HexMesh : MonoBehaviour
         colors = new List<Color>();
     }
 
-    public void Triangulate(HexCell[] cells)
+    public void Triangulate(Cell[] cells)
     {
         hexMesh.Clear();
         vertices.Clear();
@@ -46,14 +46,14 @@ public class HexMesh : MonoBehaviour
 
 
 
-	void Triangulate (HexCell cell) 
+	void Triangulate (Cell cell) 
     {
 		for (HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; direction++) {
 			Triangulate(direction, cell);
 		}
 	}
 
-	void Triangulate (HexDirection direction, HexCell cell) 
+	void Triangulate (HexDirection direction, Cell cell) 
     {
 		Vector3 center = cell.Position;
         Vector3 vertex1 = center + HexMetrics.GetFirstSolidCorner(direction);
@@ -75,7 +75,7 @@ public class HexMesh : MonoBehaviour
 	}
 
     // Generates the edges of each cell, where color blending takes place
-    void TriangulateConnection(HexDirection direction, HexCell cell, Vector3 vertex1, Vector3 vertex2)
+    void TriangulateConnection(HexDirection direction, Cell cell, Vector3 vertex1, Vector3 vertex2)
     {
         Vector3 bridge = HexMetrics.GetBridge(direction);
         Vector3 vertex3 = vertex1 + bridge;
@@ -83,7 +83,7 @@ public class HexMesh : MonoBehaviour
 
         Color color = cell.GetColor(direction);
 
-        HexCell neighbor = cell.GetNeighbor(direction);
+        Cell neighbor = cell.GetNeighbor(direction);
         if(neighbor == null)
         {
             return;
@@ -91,8 +91,8 @@ public class HexMesh : MonoBehaviour
         Color color2 = neighbor.GetColor(direction.Opposite());
         vertex3.y = vertex4.y = neighbor.Position.y; 
 
-        HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
-        if(direction <= HexDirection.E && nextNeighbor != null)
+        Cell nextNeighbor = cell.GetNeighbor(direction.Next());
+        if(direction <= HexDirection.NW && nextNeighbor != null)
         {
             Vector3 vertex5 = vertex2 + HexMetrics.GetBridge(direction.Next());
             vertex5.y = nextNeighbor.Position.y;

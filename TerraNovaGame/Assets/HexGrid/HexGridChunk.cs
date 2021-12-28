@@ -6,7 +6,7 @@ using TMPro;
 
 public class HexGridChunk : MonoBehaviour
 {
-    HexCell[] cells;
+    Cell[] cells;
 
     HexMesh hexMesh;
     Canvas gridCanvas;
@@ -16,10 +16,10 @@ public class HexGridChunk : MonoBehaviour
 		gridCanvas = GetComponentInChildren<Canvas>();
 		hexMesh = GetComponentInChildren<HexMesh>();
 
-		cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
+		cells = new Cell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
 	}
 
-    public void AddCell(int index, HexCell cell)
+    public void AddCell(int index, Cell cell)
     {
         cells[index] = cell;
 		cell.transform.SetParent(transform, false);

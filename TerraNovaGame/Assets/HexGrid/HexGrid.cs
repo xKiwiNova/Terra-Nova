@@ -12,8 +12,8 @@ public class HexGrid : MonoBehaviour
     public int chunkCountX = 4;
     public int chunkCountZ = 4;
 
-    public HexCell cellPrefab;
-    HexCell[] cells;
+    public Cell cellPrefab;
+    Cell[] cells;
 
     public HexGridChunk chunkPrefab;
     HexGridChunk[] chunks;
@@ -81,7 +81,7 @@ public class HexGrid : MonoBehaviour
 
     void CreateCells()
     {
-        cells = new HexCell[cellCountX * cellCountZ];
+        cells = new Cell[cellCountX * cellCountZ];
 
         for(int z = 0, i = 0; z < cellCountZ; z++)
         {
@@ -126,13 +126,12 @@ public class HexGrid : MonoBehaviour
     
     }
 
-    public HexCell GetCell(Vector3 position)
+    public Cell GetCell(Vector3 position)
     {
         position = transform.InverseTransformPoint(position);
-        HexCoordinates hexCoordinates = HexCoordinates.FromPosition(position);
+        HexCoords hexCoordinates = HexCoords.FromPosition(position);
         int index = hexCoordinates.X + hexCoordinates.Z * cellCountX + hexCoordinates.Z / 2;
         return cells[index];
-    
     }
 
     // Given an inputed (x, z), the program can instantiate a new cell and append it to the list of cells.
@@ -145,12 +144,12 @@ public class HexGrid : MonoBehaviour
         position.y = 0f;
         position.z = z * (HexMetrics.outerRadius * 1.5f);
 
-        HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
+        Cell cell = cells[i] = Instantiate<Cell>(cellPrefab);
 
         // cell.transform.SetParent(transform, false); // The transforms worldposition is relative, not absolute.
         cell.transform.localPosition = position;
 
-        cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+        cell.coordinates = HexCoords.FromOffsetCoordinates(x, z);
 
         // Creating the terrain data
         cell.Color = defaultColor;
@@ -161,7 +160,7 @@ public class HexGrid : MonoBehaviour
 
         if(x > 0)
         {
-            cell.SetNeighbor(HexDirection.W, cells[i - 1]);
+            cell.SetNeighbor(HexDirection.SW, cells[i - 1]);
         }
 
         if(z > 0)
@@ -208,7 +207,7 @@ public class HexGrid : MonoBehaviour
         AddCellToChunk(x, z, cell);
     }
 
-    void AddCellToChunk(int x, int z, HexCell cell)
+    void AddCellToChunk(int x, int z, Cell cell)
     {
         int chunkX = x / HexMetrics.chunkSizeX;
         int chunkZ = z / HexMetrics.chunkSizeZ;
