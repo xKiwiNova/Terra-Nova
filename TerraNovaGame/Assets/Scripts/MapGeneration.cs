@@ -70,6 +70,19 @@ public class MapGeneration : MonoBehaviour
         Color color = tile.GetColor(direction);
         HexTile neighbor = tile.GetNeighbor(direction);
 
+        bool isFirstProtrusion =  neighbor != null &&
+                tile.GetNeighbor(direction.Next()) != null &&
+                neighbor.GetNeighbor(direction.Next().Next()) != null &&
+                tile.Elevation > tile.GetNeighbor(direction.Next()).Elevation &&
+                neighbor.Elevation > neighbor.GetNeighbor(direction.Next().Next()).Elevation;
+
+        bool isSecondProtrusion = neighbor != null &&
+                tile.GetNeighbor(direction.Previous()) != null &&
+                neighbor.GetNeighbor(direction.Previous().Previous()) != null &&
+                tile.Elevation > tile.GetNeighbor(direction.Previous()).Elevation &&
+                neighbor.Elevation > neighbor.GetNeighbor(direction.Previous().Previous()).Elevation;
+
+
         // If the neighboring tile has a different elevation
         if(neighbor != null && tile.Elevation > neighbor.Elevation)
         {
@@ -82,27 +95,84 @@ public class MapGeneration : MonoBehaviour
             AddTriangleColor(color, color, color);
 
             // If the tile's elevation is higher than its neighbors, create a slant
-            if(tile.Elevation > neighbor.Elevation)
+            // Creating the part of the triangle that merges/blends
+            Vector3 vertex3 = tile.GetCorner(direction);
+            Vector3 vertex4 = tile.GetSecondCorner(direction);
+
+            vertex3.y = vertex4.y = neighbor.position.y;
+
+            AddQuad(vertex1, vertex2, vertex3, vertex4);
+            AddQuadColor(color, color, color, color);
+
+            HexTile previousNeighbor = tile.GetNeighbor(direction.Previous());
+            if(previousNeighbor != null && previousNeighbor.Elevation == tile.Elevation)
             {
-                // Creating the part of the triangle that merges/blends
-                Vector3 vertex3 = tile.GetCorner(direction);
-                Vector3 vertex4 = tile.GetSecondCorner(direction);
-
-                vertex3.y = vertex4.y = neighbor.position.y;
-
-                AddQuad(vertex1, vertex2, vertex3, vertex4);
-                AddQuadColor(color, color, color, color);
+                Color color2 = tile.GetColor(direction.Previous());
+                Vector3 vertex5 = tile.GetCorner(direction.Previous()) + Hexagon.GetSolidCorner(direction.Next());
+                AddTriangle(vertex5, vertex3, vertex1);
+                AddTriangleColor(color2, color2, color2);
             }
-            
+
+            HexTile nextNeighbor = tile.GetNeighbor(direction.Next());
+            if(nextNeighbor != null && nextNeighbor.Elevation == tile.Elevation)
+            {
+                Color color2 = tile.GetColor(direction.Next());
+                Vector3 vertex5 = tile.GetCorner(direction.Next().Next()) + Hexagon.GetSolidCorner(direction);
+                AddTriangle(vertex4, vertex5, vertex2);
+                AddTriangleColor(color2, color2, color2);
+            }
         }
         else 
         {
-            Vector3 vertex1 = tile.GetCorner(direction);
-            Vector3 vertex2 = tile.GetSecondCorner(direction);
-            center.y = vertex1.y = vertex2.y = tile.position.y;
+            if(isFirstProtrusion && !isSecondProtrusion)
+            {
+                Vector3 vertex1 = tile.GetCorner(direction);
+                Vector3 vertex2 = tile.GetCorner(direction) + Hexagon.GetSolidCorner(direction.Next().Next());
+                Vector3 vertex3 = tile.GetSecondSolidCorner(direction);
 
-            AddTriangle(center, vertex1, vertex2);
-            AddTriangleColor(color, color, color);
+                AddTriangle(center, vertex1, vertex2);
+                AddTriangleColor(color, color, color);
+
+                AddTriangle(center, vertex2, vertex3);
+                AddTriangleColor(color, color, color);       
+            }
+            else if(isSecondProtrusion && !isFirstProtrusion)
+            {
+                Vector3 vertex1 = tile.GetSolidCorner(direction);
+                Vector3 vertex2 = tile.GetSecondCorner(direction) + Hexagon.GetSolidCorner(direction.Previous());
+                Vector3 vertex3 = tile.GetSecondCorner(direction);
+
+                AddTriangle(center, vertex1, vertex2);
+                AddTriangleColor(color, color, color);
+
+                AddTriangle(center, vertex2, vertex3);
+                AddTriangleColor(color, color, color);       
+            }
+            else if(isFirstProtrusion && isSecondProtrusion)
+            {
+                Vector3 vertex1 = tile.GetSolidCorner(direction);
+                Vector3 vertex2 = tile.GetSecondCorner(direction) + Hexagon.GetSolidCorner(direction.Previous());
+                Vector3 vertex3 = tile.GetCorner(direction) + Hexagon.GetSolidCorner(direction.Next().Next());
+                Vector3 vertex4 = tile.GetSecondSolidCorner(direction);
+
+                AddTriangle(center, vertex1, vertex2);
+                AddTriangleColor(color, color, color);
+
+                AddTriangle(center, vertex2, vertex3);
+                AddTriangleColor(color, color, color);
+
+                AddTriangle(center, vertex3, vertex4);
+                AddTriangleColor(color, color, color);
+            }
+            else
+            {
+                Vector3 vertex1 = tile.GetCorner(direction);
+                Vector3 vertex2 = tile.GetSecondCorner(direction);
+                center.y = vertex1.y = vertex2.y = tile.position.y;
+
+                AddTriangle(center, vertex1, vertex2);
+                AddTriangleColor(color, color, color);
+            }
         }
     }
 

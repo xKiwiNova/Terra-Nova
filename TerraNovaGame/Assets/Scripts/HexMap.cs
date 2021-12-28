@@ -19,6 +19,9 @@ public class HexMap : MonoBehaviour
     public TextMeshProUGUI tileLabelPrefab;
     public Canvas mapCanvas;
 
+    public HexTile hexTilePrefab;
+    public HexChunk hexChunkPrefab;
+
     void Awake()
     {
         tileCountX = chunkCountX * Hexagon.chunkSizeX;
@@ -43,7 +46,10 @@ public class HexMap : MonoBehaviour
         {
             for(int z = 0; z < chunkCountZ; z++)
             {
-                chunks[x, z] = new HexChunk(x, z, this); // Needs to input the map the chunk is part of
+                HexChunk chunk = chunks[x, z] = Instantiate(hexChunkPrefab);
+                chunk.InstantiateHexChunk(x, z, this); // Needs to input the map the chunk is part of
+                chunk.name = chunk.ToString();
+                chunk.transform.SetParent(this.transform, false);
             }
         }
     }
@@ -124,7 +130,18 @@ public class HexMap : MonoBehaviour
             {
                 HexTile tile = GetTile(x, z);
                 tile.Elevation = (int)(Mathf.Clamp((Mathf.Round(elevationNoiseMap[x, z] * 5) + 1), 1, 6));
-                tile.color = Color.HSVToRGB((tile.Elevation - 1) / 8.0f, 0.75f, 1f);
+                tile.Color = Color.HSVToRGB((tile.Elevation - 1) / 8.0f, 0.75f, 1f);
+            }
+        }
+
+        foreach(HexTile tile in tiles)
+        {
+            foreach(HexTile neighbor in tile.neighbors)
+            {
+                if(neighbor != null && tile.Elevation > 1 + neighbor.Elevation)
+                {
+                    tile.Elevation--;
+                }
             }
         }
     }

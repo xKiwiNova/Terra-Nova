@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HexChunk
+public class HexChunk : MonoBehaviour
 {
     public HexTile[,] tiles;
     public int x;
     public int z;
 
-    public HexChunk(int x, int z, HexMap map)
+    public void InstantiateHexChunk(int x, int z, HexMap map)
     {
         tiles = new HexTile[Hexagon.chunkSizeX, Hexagon.chunkSizeZ];
         this.x = x;
@@ -22,7 +22,10 @@ public class HexChunk
         {
             for(int z = 0; z < Hexagon.chunkSizeZ; z++)
             {
-                tiles[x, z] = new HexTile(x + (this.x * Hexagon.chunkSizeX), z + (this.z * Hexagon.chunkSizeZ), map, this);
+                HexTile tile = tiles[x, z] = Instantiate(map.hexTilePrefab);
+                tile.InstantiateHexTile(x + (this.x * Hexagon.chunkSizeX), z + (this.z * Hexagon.chunkSizeZ), map, this);
+                tile.name = tile.ToString();
+                tile.transform.SetParent(this.transform);
             }
         }
     }

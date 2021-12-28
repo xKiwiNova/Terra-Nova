@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class HexTile
+public class HexTile : MonoBehaviour
 {
     public HexChunk chunk;
     public int x;
@@ -33,11 +33,11 @@ public class HexTile
         }
     }
 
-    public HexTile[] neighbors = new HexTile[6];
+    public HexTile[] neighbors;
 
     public TextMeshProUGUI uiText;
 
-    public Color color
+    public Color Color
     {
         get
         {
@@ -48,17 +48,19 @@ public class HexTile
             tileColor = value;
             for(int i = 0; i < 6; i++)
             {
-                tileColors[i] = tileColor * Random.Range(0.85f, 1.15f);
-                tileColors[i].a = tileColor.a;
+                try
+                {
+                    tileColors[i] = tileColor * Random.Range(0.85f, 1.15f);
+                    tileColors[i].a = tileColor.a;
+                } catch{}
             }
         }
     }
 
     private Color tileColor;
-    
-    public Color[] tileColors = new Color[6];
+    public Color[] tileColors;
 
-    public HexTile(int x, int z, HexMap map, HexChunk chunk)
+    public void InstantiateHexTile(int x, int z, HexMap map, HexChunk chunk)
     {
         this.x = x;
         this.z = z;
@@ -72,11 +74,14 @@ public class HexTile
         {
             position.z += Hexagon.innerRadius; // This creates alternating interlocking collumns
         }
+        this.transform.localPosition = position;
         this.map = map;
 
         this.hexCoordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-        this.color = new Color(1, 1, 1, 1);
+        this.Color = new Color(1, 1, 1, 1);
         this.chunk = chunk;
+        this.neighbors = new HexTile[6];
+        this.tileColors = new Color[6];
     }
 
     public Color GetColor(HexDirection direction)
