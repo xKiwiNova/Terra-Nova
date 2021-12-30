@@ -18,7 +18,7 @@ public class MapCamera : MonoBehaviour
     public float movementSpeedMinZoom;
     public float movementSpeedMaxZoom;
 
-    public HexMap grid;
+    public HexMap map;
 
     public float rotationSpeed;
     float rotationAngle;
@@ -76,10 +76,10 @@ public class MapCamera : MonoBehaviour
     // This method keeps the camera from moving out of bounds 
     Vector3 ClampPosition(Vector3 position) 
     {
-        float xMax = (grid.chunkCountX * Hexagon.chunkSizeX - 0.5f) * (2f * Hexagon.innerRadius);
+        float xMax = (map.tileCountX - 0.5f) * (1.5f * Hexagon.outerRadius);
         position.x = Mathf.Clamp(position.x, 0f, xMax);
 
-        float zMax = (grid.chunkCountZ * Hexagon.chunkSizeZ) * (1.5f * Hexagon.outerRadius);
+        float zMax = (map.tileCountX) * (2f * Hexagon.innerRadius);
         position.z = Mathf.Clamp(position.z, 0f, zMax);
 
         return position;
