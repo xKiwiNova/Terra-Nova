@@ -10,6 +10,7 @@ public class HexTile : MonoBehaviour
     public int z;
 
     public Vector3 position;
+    
     private int elevation;
 
     public HexCoordinates hexCoordinates;
@@ -26,6 +27,8 @@ public class HexTile : MonoBehaviour
             Vector3 newPosition = this.uiText.transform.localPosition;
             newPosition.z = -position.y;
             this.uiText.transform.localPosition = newPosition;
+
+            this.transform.localPosition = position;
         }
         get
         {
@@ -48,11 +51,8 @@ public class HexTile : MonoBehaviour
             tileColor = value;
             for(int i = 0; i < 6; i++)
             {
-                try
-                {
-                    tileColors[i] = tileColor * Random.Range(0.85f, 1.15f);
-                    tileColors[i].a = tileColor.a;
-                } catch{}
+                tileColors[i] = tileColor * Random.Range(0.85f, 1.15f);
+                tileColors[i].a = tileColor.a;
             }
         }
     }
@@ -74,14 +74,16 @@ public class HexTile : MonoBehaviour
         {
             position.z += Hexagon.innerRadius; // This creates alternating interlocking collumns
         }
-        this.transform.localPosition = position;
-        this.map = map;
 
+        this.transform.localPosition = position;
         this.hexCoordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-        this.Color = new Color(1, 1, 1, 1);
+
+        this.map = map;
         this.chunk = chunk;
+
         this.neighbors = new HexTile[6];
         this.tileColors = new Color[6];
+        this.Color = new Color(1, 1, 1, 1);
     }
 
     public Color GetColor(HexDirection direction)
@@ -109,14 +111,17 @@ public class HexTile : MonoBehaviour
         return Hexagon.GetSecondSolidCorner(direction) + position;
     }
 
-    public Vector3 GetCliffCorner(HexDirection direction, int elevation)
+    public void SetNeighbors()
     {
-        return Hexagon.GetCliffCorner(direction, (this.Elevation - elevation)) + position;
-    }
-
-    public Vector3 GetSecondCliffCorner(HexDirection direction, int elevation)
-    {
-        return Hexagon.GetSecondCliffCorner(direction, (this.Elevation - elevation)) + position;
+        for(HexDirection direction = HexDirection.NW; direction <= HexDirection.SW; direction++)
+        {
+            HexCoordinates neighborCoords = hexCoordinates.GetNeighbor(direction);
+            if(neighborCoords.IsOnMap(map))
+            {
+                try {SetNeighbor(direction, map.FromHexCoordinates(neighborCoords));}
+                catch{Debug.Log($"{neighborCoords.ToOffsetCoordinates().x}, {neighborCoords.ToOffsetCoordinates().y}, ({map.tiles.GetLength(0)}, {map.tiles.GetLength(0)}");}
+            }
+        }
     }
     
     public void SetNeighbor(HexDirection direction, HexTile tile)

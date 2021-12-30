@@ -7,6 +7,7 @@ public class HexChunk : MonoBehaviour
     public HexTile[,] tiles;
     public int x;
     public int z;
+    public HexMapMesh mapMesh;
 
     public void InstantiateHexChunk(int x, int z, HexMap map)
     {
@@ -26,8 +27,14 @@ public class HexChunk : MonoBehaviour
                 tile.InstantiateHexTile(x + (this.x * Hexagon.chunkSizeX), z + (this.z * Hexagon.chunkSizeZ), map, this);
                 tile.name = tile.ToString();
                 tile.transform.SetParent(this.transform);
+                mapMesh = GetComponent<HexMapMesh>();
             }
         }
+    }
+
+    public void Triangulate()
+    {
+        mapMesh.Triangulate(this);
     }
 
     public override string ToString()

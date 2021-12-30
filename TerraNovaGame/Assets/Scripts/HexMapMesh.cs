@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class MapGeneration : MonoBehaviour
+public class HexMapMesh : MonoBehaviour
 {
     Mesh hexMesh;
     List<Vector3> vertices = new List<Vector3>();
@@ -18,19 +18,15 @@ public class MapGeneration : MonoBehaviour
         hexMesh.name = "HexMesh";
     }
 
-    // Triangulates all the Chunks
-    public void Triangulate(HexChunk[,] chunks)
+    // Triangulates all the tiles in the chunk
+    public void Triangulate(HexChunk chunk)
     {
-        // Clears the current mesh before generating a new one
         hexMesh.Clear();
         vertices.Clear();
         triangles.Clear();
         colors.Clear();
 
-        foreach(HexChunk chunk in chunks)
-        {
-            Triangulate(chunk);
-        }
+        Triangulate(chunk.tiles);
 
         hexMesh.vertices = vertices.ToArray();
         hexMesh.triangles = triangles.ToArray();
@@ -39,12 +35,6 @@ public class MapGeneration : MonoBehaviour
         hexMesh.RecalculateNormals();
 
         meshCollider.sharedMesh = hexMesh;
-    }
-
-    // Triangulates all the tiles in the chunk
-    public void Triangulate(HexChunk chunk)
-    {
-        Triangulate(chunk.tiles);
     }
 
     public void Triangulate(HexTile[,] tiles)

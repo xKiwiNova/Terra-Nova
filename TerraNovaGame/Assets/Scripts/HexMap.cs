@@ -14,7 +14,7 @@ public class HexMap : MonoBehaviour
     public HexChunk[,] chunks;
     public HexTile[,] tiles;
 
-    public MapGeneration mapGeneration;
+    public HexMapMesh mapMesh;
 
     public TextMeshProUGUI tileLabelPrefab;
     public Canvas mapCanvas;
@@ -36,7 +36,20 @@ public class HexMap : MonoBehaviour
         SetNeighbors();
         ApplyElevation();
 
-        mapGeneration.Triangulate(chunks);
+        Triangulate();
+    }
+
+    void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(Physics.Raycast(ray, out hit))
+            {
+                HexCoordinates.FromPosition(hit.point);
+            }
+        }
     }
 
     // Creates each chunk
@@ -62,9 +75,8 @@ public class HexMap : MonoBehaviour
             text.rectTransform.SetParent(mapCanvas.transform, false);
             text.rectTransform.anchoredPosition = new Vector2(tile.position.x - 0.5f, tile.position.z + 1f);
 
-            Vector2Int coords = tile.hexCoordinates.ToOffsetCoordinates();
-
-            text.text = $"{tile.hexCoordinates.ToColorString()}";
+            text.text = $"{tile.x}, {tile.z}";
+            text.text = tile.hexCoordinates.ToColorString();
             text.name = $"Label {tile.ToString()}";
             tile.uiText = text;
         }
@@ -74,46 +86,7 @@ public class HexMap : MonoBehaviour
     {
         foreach(HexTile tile in tiles)
         {
-            int x = tile.hexCoordinates.X;
-            int z = tile.hexCoordinates.Z;
-
-
-            HexCoordinates coords = new HexCoordinates(x - 1, z + 1);
-            if(coords.IsOnMap(this))
-            {
-                // Debug.Log($"{tile} : {coords} ({(HexDirection)i})");
-                tile.SetNeighbor(HexDirection.NW, FromHexCoordinates(coords));
-            }
-
-            coords = new HexCoordinates(x, z + 1);
-            if(coords.IsOnMap(this))
-            {
-                tile.SetNeighbor(HexDirection.N, FromHexCoordinates(coords));
-            }
-
-            coords = new HexCoordinates(x + 1, z);
-            if(coords.IsOnMap(this))
-            {
-                tile.SetNeighbor(HexDirection.NE, FromHexCoordinates(coords));
-            }
-
-            coords = new HexCoordinates(x + 1, z - 1);
-            if(coords.IsOnMap(this))
-            {
-                tile.SetNeighbor(HexDirection.SE, FromHexCoordinates(coords));
-            }
-
-            coords = new HexCoordinates(x, z - 1);
-            if(coords.IsOnMap(this))
-            {
-                tile.SetNeighbor(HexDirection.S, FromHexCoordinates(coords));
-            }
-
-            coords = new HexCoordinates(x - 1, z);
-            if(coords.IsOnMap(this))
-            {
-                tile.SetNeighbor(HexDirection.SW, FromHexCoordinates(coords));
-            }
+            tile.SetNeighbors();
         }
     }
 
@@ -141,8 +114,17 @@ public class HexMap : MonoBehaviour
                 if(neighbor != null && tile.Elevation > 1 + neighbor.Elevation)
                 {
                     tile.Elevation--;
+                    tile.Color = Color.HSVToRGB((tile.Elevation - 1) / 8.0f, 0.75f, 1f);
                 }
             }
+        }
+    }
+
+    public void Triangulate()
+    {
+        foreach(HexChunk chunk in chunks)
+        {
+            chunk.Triangulate();
         }
     }
     
@@ -159,6 +141,14 @@ public class HexMap : MonoBehaviour
     public HexTile GetTile(int x, int z)
     {
        return tiles[x, z];
+    }
+
+    public bool IsOnMap(int x, int z)
+    {
+        bool validX = (x >= 0 && x < tileCountX);
+        bool validZ = (z >= 0 && z < tileCountZ);
+
+        return validX && validZ;
     }
 
     public HexTile FromPosition(Vector3 positon)

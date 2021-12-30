@@ -46,14 +46,4 @@ public static class Hexagon
     {
         return GetSecondCorner(direction) * solidFactor;
     }
-
-    public static Vector3 GetCliffCorner(HexDirection direction, int elevation)
-    {
-        return GetCorner(direction) * (1 + blendFactor * elevation);
-    }
-
-    public static Vector3 GetSecondCliffCorner(HexDirection direction, int elevation)
-    {
-        return GetSecondCorner(direction) * (1 + blendFactor * elevation);
-    }
 }
