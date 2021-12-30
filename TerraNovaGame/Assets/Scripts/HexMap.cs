@@ -47,7 +47,7 @@ public class HexMap : MonoBehaviour
             RaycastHit hit;
             if(Physics.Raycast(ray, out hit))
             {
-                HexCoordinates.FromPosition(hit.point);
+                Debug.Log(HexCoordinates.FromPosition(hit.point));
             }
         }
     }

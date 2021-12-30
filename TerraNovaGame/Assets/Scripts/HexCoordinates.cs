@@ -73,9 +73,54 @@ public struct HexCoordinates
         return map.IsOnMap(x, z);
     }
 
-    public static void FromPosition(Vector3 position)
+    
+    public static HexCoordinates FromPosition(Vector3 position)
     {
-        
+        float x = position.x;
+        float z = position.z;
+
+        float q = (x * (2f / 3f) ) / Hexagon.outerRadius;
+        float r = ((x * (-1f / 3f) ) + ( Mathf.Sqrt(3f) / 3f)  * z) / Hexagon.outerRadius;
+        return RoundCoordinate(q, r);
+    }
+
+    public Vector3 GetPosition()
+    {
+        Vector3 position = new Vector3();
+
+        position.x = (q * Hexagon.outerRadius * 1.5f);
+        position.z = (q * Hexagon.innerRadius) + (r * 2f * Hexagon.innerRadius);
+        return position;
+    }
+
+    public static HexCoordinates RoundCoordinate(float q, float r)
+    {
+        float s = -r - q;
+
+        int newQ = Mathf.RoundToInt(q);
+        int newR = Mathf.RoundToInt(r);
+        int newS = Mathf.RoundToInt(s);
+
+        // Sometimes rounding returns an invalid coordinate, this section should fix that
+        // It corrects the coordinate with the most difference when rounding
+        float qDiff = Mathf.Abs(newQ - q);
+        float rDiff = Mathf.Abs(newS - s);
+        float sDiff = Mathf.Abs(newR - r);
+
+        if(qDiff > rDiff && qDiff > sDiff)
+        {
+            newQ = -newR - newS;
+        }
+        else if(rDiff > sDiff)
+        {
+            newR = -newQ - newS;
+        }
+        else
+        {
+            newS = -newQ - newR;
+        }
+
+        return new HexCoordinates(newQ, newR, newS);
     }
 
     public HexCoordinates Add(HexCoordinates coord1, HexCoordinates coord2)

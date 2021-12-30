@@ -65,19 +65,11 @@ public class HexTile : MonoBehaviour
         this.x = x;
         this.z = z;
         map.tiles[x, z] = this;
-
-        position = new Vector3(
-            (x * Hexagon.outerRadius * 1.5f) + Hexagon.outerRadius, // Since the tiles interlock, only a 1.5 offset is needed
-            0f, (z * Hexagon.innerRadius * 2f) + Hexagon.innerRadius);
-
-        if(x % 2 == 0) 
-        {
-            position.z += Hexagon.innerRadius; // This creates alternating interlocking collumns
-        }
-
-        this.transform.localPosition = position;
         this.hexCoordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 
+        position = hexCoordinates.GetPosition();
+        this.transform.localPosition = position;
+        
         this.map = map;
         this.chunk = chunk;
 
