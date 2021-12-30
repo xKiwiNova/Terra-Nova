@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Enum for storing the directions of a Hexagon's triangles
 public enum HexDirection
 {
     NW, N, NE, SE, S, SW

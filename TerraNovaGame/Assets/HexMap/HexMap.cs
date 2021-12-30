@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-
+// Generates the tiles and chunks of the map
 public class HexMap : MonoBehaviour
 {
     public int chunkCountX = 3;
@@ -11,23 +11,48 @@ public class HexMap : MonoBehaviour
     public int chunkCountZ = 3;
     public int tileCountZ;
 
+    // The map stores a 2D array of chunks, which each store a 2D of their tiles
     public HexChunk[,] chunks;
     public HexTile[,] tiles;
 
-    public HexMapMesh mapMesh;
-
+    // These "prefabs" (not actual prefabs) will be instantiated when the map is generated
     public TextMeshProUGUI tileLabelPrefab;
     public Canvas mapCanvas;
 
     public HexTile hexTilePrefab;
     public HexChunk hexChunkPrefab;
 
+    private bool showDebugText = true;
+
+    [SerializeField]
+    public bool ShowDebugText
+    {
+        get
+        {
+            return showDebugText;
+        }
+
+        set
+        {
+            showDebugText = value;
+            foreach(HexTile tile in tiles)
+            {
+                if(tile.uiText != null)
+                {
+                    tile.uiText.enabled = value;
+                }
+            }
+        }
+    }
+
+    public LayerMask layer;
+
     void Awake()
     {
         tileCountX = chunkCountX * Hexagon.chunkSizeX;
         tileCountZ = chunkCountZ * Hexagon.chunkSizeZ;
 
-        // Initializing the list of tiles
+        // Initializing the list of tiles and chunks
         chunks = new HexChunk[chunkCountX, chunkCountZ];
         tiles = new HexTile[tileCountX, tileCountZ];
 
@@ -39,19 +64,6 @@ public class HexMap : MonoBehaviour
         Triangulate();
     }
 
-    void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if(Physics.Raycast(ray, out hit))
-            {
-                Debug.Log(HexCoordinates.FromPosition(hit.point));
-            }
-        }
-    }
-
     // Creates each chunk
     void GenerateChunks()
     {
@@ -60,28 +72,33 @@ public class HexMap : MonoBehaviour
             for(int z = 0; z < chunkCountZ; z++)
             {
                 HexChunk chunk = chunks[x, z] = Instantiate(hexChunkPrefab);
-                chunk.InstantiateHexChunk(x, z, this); // Needs to input the map the chunk is part of
+                chunk.InstantiateHexChunk(x, z, this);
                 chunk.name = chunk.ToString();
                 chunk.transform.SetParent(this.transform, false);
             }
         }
     }
     
+    // Generates a marker for each tile that can show information like Coordinates
     void MakeDebugText()
     {
         foreach(HexTile tile in tiles)
         {
+            
             TextMeshProUGUI text = Instantiate<TextMeshProUGUI>(tileLabelPrefab);
             text.rectTransform.SetParent(mapCanvas.transform, false);
             text.rectTransform.anchoredPosition = new Vector2(tile.position.x - 0.5f, tile.position.z + 1f);
 
-            text.text = $"{tile.x}, {tile.z}";
             text.text = tile.hexCoordinates.ToColorString();
             text.name = $"Label {tile.ToString()}";
             tile.uiText = text;
+
+            // Can be set to inactive
+            if(!showDebugText) { tile.uiText.enabled = false; }
         }
     }
 
+    // Sets the neighbors of each tile
     void SetNeighbors()
     {
         foreach(HexTile tile in tiles)
@@ -90,6 +107,7 @@ public class HexMap : MonoBehaviour
         }
     }
 
+    // Applies elevation to each tile based on a Noise Map
     void ApplyElevation()
     {
         float[,] elevationNoiseMap = NoiseMap.GenerateNoiseMap(
@@ -120,6 +138,7 @@ public class HexMap : MonoBehaviour
         }
     }
 
+    // Generates the map mesh
     public void Triangulate()
     {
         foreach(HexChunk chunk in chunks)
@@ -127,7 +146,21 @@ public class HexMap : MonoBehaviour
             chunk.Triangulate();
         }
     }
-    
+
+    void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(Physics.Raycast(ray, out hit))
+            {
+                // Debug.Log(HexCoordinates.FromPosition(hit.point));
+            }
+        }
+    }
+
+    // Returns a tile based on its HexCoordinates
     public HexTile FromHexCoordinates(HexCoordinates coordinates)
     {
         return GetTile(coordinates.ToOffsetCoordinates().x, coordinates.ToOffsetCoordinates().y);
@@ -151,9 +184,9 @@ public class HexMap : MonoBehaviour
         return validX && validZ;
     }
 
-    public HexTile FromPosition(Vector3 positon)
+    // Returns a tile based on a Vector3
+    public HexTile FromPosition(Vector3 position)
     {
-        positon = transform.InverseTransformPoint(positon);
-        return GetTile(1, 2);
+        return this.FromHexCoordinates(HexCoordinates.FromPosition(position));
     }
 }

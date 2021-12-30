@@ -17,6 +17,7 @@ public class HexTile : MonoBehaviour
 
     public HexMap map;
 
+    // When changing elevation, this also motifies the transform and debugText
     public int Elevation
     {
         set
@@ -40,6 +41,9 @@ public class HexTile : MonoBehaviour
 
     public TextMeshProUGUI uiText;
 
+    public Transform building;
+
+    // Each triangle is a slightly different color
     public Color Color
     {
         get

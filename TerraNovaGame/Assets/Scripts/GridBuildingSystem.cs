@@ -6,7 +6,7 @@ public class GridBuildingSystem : MonoBehaviour
 {
     public LayerMask terrainLayer;
     private Grid<GridObject> grid; 
-    public BuildingSO building;
+    public BuildingSO building; 
     private Vector3 origin;
     private BuildingSO.Direction dir = BuildingSO.Direction.Down; 
     public Transform debugTile;

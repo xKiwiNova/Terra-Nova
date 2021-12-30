@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Generates the mesh for the map
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class HexMapMesh : MonoBehaviour
 {
@@ -21,13 +23,16 @@ public class HexMapMesh : MonoBehaviour
     // Triangulates all the tiles in the chunk
     public void Triangulate(HexChunk chunk)
     {
+        // Clears any old data before generating new data
         hexMesh.Clear();
         vertices.Clear();
         triangles.Clear();
         colors.Clear();
 
+        // Generates the data for the mesh
         Triangulate(chunk.tiles);
 
+        // Applies that data
         hexMesh.vertices = vertices.ToArray();
         hexMesh.triangles = triangles.ToArray();
         hexMesh.colors = colors.ToArray();
@@ -60,12 +65,14 @@ public class HexMapMesh : MonoBehaviour
         Color color = tile.GetColor(direction);
         HexTile neighbor = tile.GetNeighbor(direction);
 
+        // If the triangle next to this one is inclined but this one is not
         bool isFirstProtrusion =  neighbor != null &&
                 tile.GetNeighbor(direction.Next()) != null &&
                 neighbor.GetNeighbor(direction.Next().Next()) != null &&
                 tile.Elevation > tile.GetNeighbor(direction.Next()).Elevation &&
                 neighbor.Elevation > neighbor.GetNeighbor(direction.Next().Next()).Elevation;
 
+        // If the triangle previous to this one is inclined but this one is not
         bool isSecondProtrusion = neighbor != null &&
                 tile.GetNeighbor(direction.Previous()) != null &&
                 neighbor.GetNeighbor(direction.Previous().Previous()) != null &&
@@ -85,7 +92,6 @@ public class HexMapMesh : MonoBehaviour
             AddTriangleColor(color, color, color);
 
             // If the tile's elevation is higher than its neighbors, create a slant
-            // Creating the part of the triangle that merges/blends
             Vector3 vertex3 = tile.GetCorner(direction);
             Vector3 vertex4 = tile.GetSecondCorner(direction);
 
@@ -94,6 +100,7 @@ public class HexMapMesh : MonoBehaviour
             AddQuad(vertex1, vertex2, vertex3, vertex4);
             AddQuadColor(color, color, color, color);
 
+            // Creates the final inverted corners at the intersections between three Hexagons where two are higher than the other
             HexTile previousNeighbor = tile.GetNeighbor(direction.Previous());
             if(previousNeighbor != null && previousNeighbor.Elevation == tile.Elevation)
             {
@@ -114,6 +121,7 @@ public class HexMapMesh : MonoBehaviour
         }
         else 
         {
+            // If this is only a First Protruision
             if(isFirstProtrusion && !isSecondProtrusion)
             {
                 Vector3 vertex1 = tile.GetCorner(direction);
@@ -126,6 +134,7 @@ public class HexMapMesh : MonoBehaviour
                 AddTriangle(center, vertex2, vertex3);
                 AddTriangleColor(color, color, color);       
             }
+            // If this is only a second protrusion
             else if(isSecondProtrusion && !isFirstProtrusion)
             {
                 Vector3 vertex1 = tile.GetSolidCorner(direction);
@@ -138,6 +147,7 @@ public class HexMapMesh : MonoBehaviour
                 AddTriangle(center, vertex2, vertex3);
                 AddTriangleColor(color, color, color);       
             }
+            // If both
             else if(isFirstProtrusion && isSecondProtrusion)
             {
                 Vector3 vertex1 = tile.GetSolidCorner(direction);
@@ -154,6 +164,7 @@ public class HexMapMesh : MonoBehaviour
                 AddTriangle(center, vertex3, vertex4);
                 AddTriangleColor(color, color, color);
             }
+            // If neither
             else
             {
                 Vector3 vertex1 = tile.GetCorner(direction);
@@ -166,7 +177,7 @@ public class HexMapMesh : MonoBehaviour
         }
     }
 
-    // Adds a triangle giver three vertices
+    // Adds a triangle given three vertices
     void AddTriangle(Vector3 vertex1, Vector3 vertex2, Vector3 vertex3)
     {
         int currentVertices = vertices.Count;

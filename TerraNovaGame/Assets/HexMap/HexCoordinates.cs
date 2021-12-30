@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// A struct used to convert "Offset Coordinates" (x, z) to "Cubic Coordinates" (q, r, s)
 public struct HexCoordinates
 {
     public int q
@@ -27,7 +28,7 @@ public struct HexCoordinates
     {
         this.q = q;
         this.r = r;
-        this.s = -r - q;
+        this.s = -r - q; // q + r + s = 0 
     }
 
     public HexCoordinates(int q, int r, int s)
@@ -37,6 +38,7 @@ public struct HexCoordinates
         this.s = s;
     }
 
+    // Stores the neighbors of a tile in relation to the tiles HexCoordinates
     public static HexCoordinates[] neighbors =
     {
         new HexCoordinates(-1, 1, 0),
@@ -47,13 +49,15 @@ public struct HexCoordinates
         new HexCoordinates(-1, 0, 1)
     };    
 
+    // Converts from Offset to Cubic Coordinates
     public static HexCoordinates FromOffsetCoordinates(int x, int z)
     {
         int q = x;
         int r = z - (x + (x & 1) ) / 2;
         return new HexCoordinates(q, r);
     }
-
+    
+    // This returns a Vector2Int which needs to be later converted into 2 integers 
     public Vector2Int ToOffsetCoordinates()
     {
         int x = q;
@@ -66,6 +70,7 @@ public struct HexCoordinates
         return Add(this, neighbors[(int)direction]);
     }
 
+    // Returns whether or not a tile is within the bounds in a given map
     public bool IsOnMap(HexMap map)
     {
         int x = this.ToOffsetCoordinates().x;
@@ -73,7 +78,8 @@ public struct HexCoordinates
         return map.IsOnMap(x, z);
     }
 
-    
+    // Grants HexCoordinates from a Vector3
+    // It inverts a the formula for Getting the position and rounds said coordinates to find the HexCoordinates
     public static HexCoordinates FromPosition(Vector3 position)
     {
         float x = position.x;
@@ -84,15 +90,19 @@ public struct HexCoordinates
         return RoundCoordinate(q, r);
     }
 
+    // Gets the position of Hexcoordinates as a Vector3
+    // The q Vector is (outerRadius * 1.5, innerRadius)
+    // The r Vector is (0, 2 * innerRadius)
     public Vector3 GetPosition()
     {
         Vector3 position = new Vector3();
 
-        position.x = (q * Hexagon.outerRadius * 1.5f);
+        position.x = (q * Hexagon.outerRadius * 1.5f); 
         position.z = (q * Hexagon.innerRadius) + (r * 2f * Hexagon.innerRadius);
         return position;
     }
 
+    // Rounds floating point coordinates to HexCoordinates
     public static HexCoordinates RoundCoordinate(float q, float r)
     {
         float s = -r - q;
