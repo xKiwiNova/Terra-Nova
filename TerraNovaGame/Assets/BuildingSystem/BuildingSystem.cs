@@ -9,36 +9,57 @@ public class BuildingSystem : MonoBehaviour
 
     public Building building;
     public HexDirection direction = HexDirection.NW;
+    Transform ghostTransform;
+
+    public Material ghostMaterial;
     
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(ghostTransform != null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if(Physics.Raycast(ray, out hit, Mathf.Infinity, map.layer))
+            Destroy(ghostTransform.gameObject);
+        }
+        
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        
+        if(Physics.Raycast(ray, out hit, Mathf.Infinity, map.layer))
+        {
+            HexTile tile = map.FromPosition(hit.point);
+            bool canBuild = tile.building == null;
+
+            ghostMaterial.EnableKeyword("_EMISSION");
+
+            if (canBuild == false) 
             {
-                HexTile tile = map.FromPosition(hit.point);
-                PlaceBuilding(tile, building, direction);
+                ghostMaterial.SetColor("_FresnelColor", Color.red * 2);
+                ghostMaterial.SetColor("_MainColor", Color.red * 1);
+            }
+
+            else
+            {
+                ghostMaterial.SetColor("_FresnelColor", Color.green * 10);
+                ghostMaterial.SetColor("_MainColor", Color.green * 5);
+            }
+
+            Vector3 position = tile.position;
+            Quaternion rotation = Quaternion.Euler(0, GetRotation(direction), 0);
+
+            ghostTransform = Instantiate(building.ghostTransform.transform, position, rotation);
+            if(Input.GetMouseButtonDown(0))
+            {
+
+                if(canBuild)
+                {
+                    Transform buildingTransform = Instantiate(building.buildingTransform.transform, position, rotation);
+                    tile.building = buildingTransform;
+                }              
             }
         }
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
             direction = direction.Next();
-        }
-    }
-
-    void PlaceBuilding(HexTile tile, Building building, HexDirection direction)
-    {
-        bool CanBuild = tile.building == null;
-        if(CanBuild)
-        {
-            Vector3 positon = tile.position;
-            Quaternion rotation = Quaternion.Euler(0, GetRotation(direction), 0);
-
-            Transform buildingTransform = Instantiate(building.buildingObject.transform, positon, rotation);
-            tile.building = buildingTransform;
         }
     }
 

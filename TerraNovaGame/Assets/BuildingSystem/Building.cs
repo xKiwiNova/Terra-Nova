@@ -6,7 +6,7 @@ using UnityEngine;
 public class Building : ScriptableObject
 {
     public string buildingName;
-    public GameObject buildingObject;
+    public GameObject buildingTransform;
     public GameObject ghostTransform;
 
 }
