@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestBuilding
   m_EditorClassIdentifier: 
   buildingName: Test
-  buildingTransform: {fileID: 5389431937812123868, guid: 6ba14ab2a7665224a876e00922c6cfe1,
+  buildingTransform: {fileID: 1054350250201494199, guid: 2c360894a63ed4c4eb13f33c2e8d2bcc,
     type: 3}
-  ghostTransform: {fileID: 1648783563562238832, guid: 273cc795b3a0a4646b005c716644b674,
+  ghostTransform: {fileID: 1054350250201494199, guid: 2c360894a63ed4c4eb13f33c2e8d2bcc,
     type: 3}
