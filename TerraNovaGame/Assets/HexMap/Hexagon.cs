@@ -21,6 +21,7 @@ public static class Hexagon
 
     // The amount per "unit" of elevation that the tile is elevated.
     public static float elevationStep = 1.5f;
+    public static float[,] noiseMap;
 
     // A list of vectors for the corner vertices in relation to the center
     public static Vector3[] corners = 
@@ -56,5 +57,11 @@ public static class Hexagon
     public static Vector3 GetSecondSolidCorner(HexDirection direction)
     {
         return GetSecondCorner(direction) * solidFactor;
+    }
+
+    public static float GetOffset(Vector3 position)
+    {
+        (int, int) index = ( Mathf.Abs((int)(position.x % 128)), Mathf.Abs((int)(position.z % 128)) );
+        return (noiseMap[index.Item1, index.Item2]);
     }
 }

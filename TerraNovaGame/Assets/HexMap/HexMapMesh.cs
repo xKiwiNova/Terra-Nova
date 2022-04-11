@@ -12,6 +12,7 @@ public class HexMapMesh : MonoBehaviour
     List<int> triangles = new List<int>();
     List<Color> colors = new List<Color>();
     MeshCollider meshCollider;
+    Color32 rockColor = new Color32(220, 210, 160, 255);
 
     void Awake()
     {
@@ -98,7 +99,7 @@ public class HexMapMesh : MonoBehaviour
             vertex3.y = vertex4.y = neighbor.position.y;
 
             AddQuad(vertex1, vertex2, vertex3, vertex4);
-            AddQuadColor(color, color, color, color);
+            AddQuadColor(rockColor, rockColor, rockColor, rockColor);
 
             // Creates the final inverted corners at the intersections between three Hexagons where two are higher than the other
             HexTile previousNeighbor = tile.GetNeighbor(direction.Previous());
@@ -107,7 +108,7 @@ public class HexMapMesh : MonoBehaviour
                 Color color2 = tile.GetColor(direction.Previous());
                 Vector3 vertex5 = tile.GetCorner(direction.Previous()) + Hexagon.GetSolidCorner(direction.Next());
                 AddTriangle(vertex5, vertex3, vertex1);
-                AddTriangleColor(color2, color2, color2);
+                AddTriangleColor(rockColor, rockColor, rockColor);
             }
 
             HexTile nextNeighbor = tile.GetNeighbor(direction.Next());
@@ -116,7 +117,7 @@ public class HexMapMesh : MonoBehaviour
                 Color color2 = tile.GetColor(direction.Next());
                 Vector3 vertex5 = tile.GetCorner(direction.Next().Next()) + Hexagon.GetSolidCorner(direction);
                 AddTriangle(vertex4, vertex5, vertex2);
-                AddTriangleColor(color2, color2, color2);
+                AddTriangleColor(rockColor, rockColor, rockColor);
             }
         }
         else 
@@ -142,10 +143,10 @@ public class HexMapMesh : MonoBehaviour
                 Vector3 vertex3 = tile.GetSecondCorner(direction);
 
                 AddTriangle(center, vertex1, vertex2);
-                AddTriangleColor(color, color, color);
+                AddTriangleColor(rockColor, rockColor, rockColor);
 
                 AddTriangle(center, vertex2, vertex3);
-                AddTriangleColor(color, color, color);       
+                AddTriangleColor(rockColor, rockColor, rockColor);       
             }
             // If both
             else if(isFirstProtrusion && isSecondProtrusion)
@@ -162,7 +163,7 @@ public class HexMapMesh : MonoBehaviour
                 AddTriangleColor(color, color, color);
 
                 AddTriangle(center, vertex3, vertex4);
-                AddTriangleColor(color, color, color);
+                AddTriangleColor(rockColor, rockColor, rockColor);
             }
             // If neither
             else
@@ -177,14 +178,30 @@ public class HexMapMesh : MonoBehaviour
         }
     }
 
+    Vector3 GetOffset(Vector3 vertex)
+    {
+        Vector3 offset = new Vector3(0, -Hexagon.GetOffset(vertex) * 1.5f, 0);
+        return vertex + offset;
+    }
+
+    public void Debug1(HexTile tile)
+    {
+        string debug = "";
+        for(HexDirection dir = HexDirection.NW; dir <= HexDirection.SW; dir++)
+        {
+            debug += GetOffset(tile.GetCorner(dir)).y +  ", "; 
+        }
+        Debug.Log(debug);
+    }
+
     // Adds a triangle given three vertices
     void AddTriangle(Vector3 vertex1, Vector3 vertex2, Vector3 vertex3)
     {
         int currentVertices = vertices.Count;
 
-        vertices.Add(vertex1);
-        vertices.Add(vertex2);
-        vertices.Add(vertex3);
+        vertices.Add(GetOffset(vertex1));
+        vertices.Add(GetOffset(vertex2));
+        vertices.Add(GetOffset(vertex3));
 
         triangles.Add(currentVertices);
         triangles.Add(currentVertices + 1);
@@ -203,10 +220,10 @@ public class HexMapMesh : MonoBehaviour
     {
         int currentVertices = vertices.Count;
 
-		vertices.Add(vertex1);
-		vertices.Add(vertex2);
-		vertices.Add(vertex3);
-		vertices.Add(vertex4);
+		vertices.Add(GetOffset(vertex1));
+		vertices.Add(GetOffset(vertex2));
+		vertices.Add(GetOffset(vertex3));
+		vertices.Add(GetOffset(vertex4));
 
 		triangles.Add(currentVertices);
 		triangles.Add(currentVertices + 2);

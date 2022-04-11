@@ -25,7 +25,9 @@ public class BuildingSystem : MonoBehaviour
         
         if(Physics.Raycast(ray, out hit, Mathf.Infinity, map.layer))
         {
+            
             HexTile tile = map.FromPosition(hit.point);
+            
             bool canBuild = tile.building == null;
 
             ghostMaterial.EnableKeyword("_EMISSION");
@@ -48,7 +50,7 @@ public class BuildingSystem : MonoBehaviour
             ghostTransform = Instantiate(building.ghostTransform.transform, position, rotation);
             if(Input.GetMouseButtonDown(0))
             {
-
+                tile.chunk.mapMesh.Debug1(tile);
                 if(canBuild)
                 {
                     Transform buildingTransform = Instantiate(building.buildingTransform.transform, position, rotation);

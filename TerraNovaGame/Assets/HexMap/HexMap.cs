@@ -46,15 +46,28 @@ public class HexMap : MonoBehaviour
     }
 
     public LayerMask layer;
+    public Color32 color;
 
     void Awake()
     {
+        color = Color.HSVToRGB(
+            Random.Range(.01f, .99f), 
+            Random.Range(.8f, .9f),
+            Random.Range(.7f, .9f));
+
         tileCountX = chunkCountX * Hexagon.chunkSizeX;
         tileCountZ = chunkCountZ * Hexagon.chunkSizeZ;
 
         // Initializing the list of tiles and chunks
         chunks = new HexChunk[chunkCountX, chunkCountZ];
         tiles = new HexTile[tileCountX, tileCountZ];
+
+        float[,] elevationNoiseMap = NoiseMap.GenerateNoiseMap(
+            128, 128, 
+            Random.Range(0, 99999), 
+            Random.Range(10.0f, 20.0f), 
+            4, .5f, 2);
+        Hexagon.noiseMap = elevationNoiseMap;
 
         GenerateChunks();
         MakeDebugText();
@@ -84,7 +97,6 @@ public class HexMap : MonoBehaviour
     {
         foreach(HexTile tile in tiles)
         {
-            
             TextMeshProUGUI text = Instantiate<TextMeshProUGUI>(tileLabelPrefab);
             text.rectTransform.SetParent(mapCanvas.transform, false);
             text.rectTransform.anchoredPosition = new Vector2(tile.position.x - 0.5f, tile.position.z + 1f);
@@ -121,7 +133,7 @@ public class HexMap : MonoBehaviour
             {
                 HexTile tile = GetTile(x, z);
                 tile.Elevation = (int)(Mathf.Clamp((Mathf.Round(elevationNoiseMap[x, z] * 5) + 1), 1, 6));
-                tile.Color = Color.HSVToRGB((tile.Elevation - 1) / 8.0f, 0.75f, 1f);
+                // tile.Color = Color.HSVToRGB((tile.Elevation - 1) / 8.0f, 0.75f, 1f);
             }
         }
 

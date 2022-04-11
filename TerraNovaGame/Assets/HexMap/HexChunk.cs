@@ -30,6 +30,7 @@ public class HexChunk : MonoBehaviour
                 tile.InstantiateHexTile(x + (this.x * Hexagon.chunkSizeX), z + (this.z * Hexagon.chunkSizeZ), map, this);
                 tile.name = tile.ToString();
                 tile.transform.SetParent(this.transform);
+                tile.Color = map.color;
             }
         }
     }
