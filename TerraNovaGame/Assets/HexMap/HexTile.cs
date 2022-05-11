@@ -17,6 +17,8 @@ public class HexTile : MonoBehaviour
 
     public HexMap map;
 
+    public List<GameObject> forestElements;
+
     // When changing elevation, this also motifies the transform and debugText
     public int Elevation
     {
@@ -55,13 +57,14 @@ public class HexTile : MonoBehaviour
             tileColor = value;
             for(int i = 0; i < 6; i++)
             {
-                tileColors[i] = tileColor * Random.Range(0.85f, 1.15f);
+                tileColors[i] = tileColor * tileColorModifiers[i];
                 tileColors[i].a = tileColor.a;
             }
         }
     }
 
     private Color tileColor;
+    public float[] tileColorModifiers;
     public Color[] tileColors;
 
     public void InstantiateHexTile(int x, int z, HexMap map, HexChunk chunk)
@@ -78,8 +81,16 @@ public class HexTile : MonoBehaviour
         this.chunk = chunk;
 
         this.neighbors = new HexTile[6];
+
+        tileColorModifiers = new float[6];
+        for(int i = 0; i < 6; i++)
+        {
+            tileColorModifiers[i] = Random.Range(.95f, 1.05f);
+        }
+
         this.tileColors = new Color[6];
         this.Color = new Color(1, 1, 1, 1);
+        forestElements = new List<GameObject>();
     }
 
     public Color GetColor(HexDirection direction)

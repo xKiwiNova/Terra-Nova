@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ForestGeneration : MonoBehaviour
+public class HexForest : MonoBehaviour
 {
     public ForestElement[] forestElements;
-    public HexGrid grid;
+    public HexMap map;
 
     [System.Serializable]
     public class ForestElement
@@ -30,40 +30,41 @@ public class ForestGeneration : MonoBehaviour
         }
     }
 
-    public void GenerateForest(Cell[] cells)
+    public void GenerateForest(HexTile[,] tiles)
     {
-        foreach (Cell cell in cells)
+        foreach (HexTile tile in tiles)
         {
-            GenerateTrees(cell);
+            GenerateTrees(tile);
         }
     }
 
-    public void GenerateTrees(Cell cell)
+    public void GenerateTrees(HexTile tile)
     {
-        Vector3 startPosition = new Vector3(cell.Position.x - (HexMetrics.innerRadius), cell.Position.y, cell.Position.z - HexMetrics.outerRadius);
+        Vector3 startPosition = new Vector3(tile.position.x - (Hexagon.innerRadius), tile.position.y, tile.position.z - Hexagon.outerRadius);
         float elementSpacing = 5;
 
-        if(cell.elevation < 6) return;
+        if(tile.Elevation == 0) return;
         
-        for(float localX = 0; localX < HexMetrics.innerRadius * 2f; localX += elementSpacing)
+        for(float localX = 0; localX < Hexagon.innerRadius * 2f; localX += elementSpacing)
         {
-            for(float localZ = 0; localZ < HexMetrics.outerRadius * 2f; localZ += elementSpacing)
+            for(float localZ = 0; localZ < Hexagon.outerRadius * 2f; localZ += elementSpacing)
             {
                 ForestElement forestElement = forestElements[0];
-                forestElement.SetDensity(cell.precipitation);
+                forestElement.SetDensity(tile.Elevation * 36);
                 if(forestElement.CanPlace())
                 {
                     Vector3 offset = new Vector3(Random.Range(-1.5f, 1.5f), 0, UnityEngine.Random.Range(-1.5f, 1.5f));
-                    Vector3 position = cell.Position + offset + new Vector3(localX, 0, localZ);
-                    Vector3 scale = Vector3.one * Random.Range(85.0f, 115.0f);
+                    Vector3 position = tile.position + offset + new Vector3(localX, 0, localZ);
+                    position.y += Hexagon.GetOffset(position) - .05f;
+                    Vector3 scale = Vector3.one * Random.Range(45.0f, 65.0f);
                     try
                     {
-                        Cell newCell = grid.GetCell(position);
-                        if(newCell.elevation == cell.elevation)
+                        HexTile newtile = map.FromPosition(position);
+                        if(newtile.position == tile.position)
                         {
                             GameObject newElement = Instantiate(forestElement.GetRandomPrefab(), position, Quaternion.Euler(-90, UnityEngine.Random.Range(0, 360), 0));
                             newElement.transform.localScale = scale;
-                            newCell.forestElements.Add(newElement);
+                            newtile.forestElements.Add(newElement);
                         }
                     }
                     catch

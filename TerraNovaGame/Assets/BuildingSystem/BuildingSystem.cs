@@ -50,7 +50,7 @@ public class BuildingSystem : MonoBehaviour
             ghostTransform = Instantiate(building.ghostTransform.transform, position, rotation);
             if(Input.GetMouseButtonDown(0))
             {
-                tile.chunk.mapMesh.Debug1(tile);
+                // tile.chunk.mapMesh.Debug1(tile);
                 if(canBuild)
                 {
                     Transform buildingTransform = Instantiate(building.buildingTransform.transform, position, rotation);

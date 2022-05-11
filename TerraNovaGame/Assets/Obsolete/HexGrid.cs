@@ -29,7 +29,7 @@ public class HexGrid : MonoBehaviour
     float[,] temperatureNoiseMap;
 
     public GameObject waterPlane;
-    public ForestGeneration forestGeneration;
+
 
     
     void Awake()
@@ -61,7 +61,7 @@ public class HexGrid : MonoBehaviour
 
         CreateChunks();
         CreateCells();
-        forestGeneration.GenerateForest(cells);
+        // forestGeneration.GenerateForest(cells);
     }
 
     void CreateChunks()

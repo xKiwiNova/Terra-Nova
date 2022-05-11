@@ -143,10 +143,10 @@ public class HexMapMesh : MonoBehaviour
                 Vector3 vertex3 = tile.GetSecondCorner(direction);
 
                 AddTriangle(center, vertex1, vertex2);
-                AddTriangleColor(rockColor, rockColor, rockColor);
+                AddTriangleColor(color, color, color);
 
                 AddTriangle(center, vertex2, vertex3);
-                AddTriangleColor(rockColor, rockColor, rockColor);       
+                AddTriangleColor(color, color, color);       
             }
             // If both
             else if(isFirstProtrusion && isSecondProtrusion)
@@ -163,7 +163,7 @@ public class HexMapMesh : MonoBehaviour
                 AddTriangleColor(color, color, color);
 
                 AddTriangle(center, vertex3, vertex4);
-                AddTriangleColor(rockColor, rockColor, rockColor);
+                AddTriangleColor(color, color, color);
             }
             // If neither
             else
@@ -180,18 +180,8 @@ public class HexMapMesh : MonoBehaviour
 
     Vector3 GetOffset(Vector3 vertex)
     {
-        Vector3 offset = new Vector3(0, -Hexagon.GetOffset(vertex) * 1.5f, 0);
+        Vector3 offset = new Vector3(0, Hexagon.GetOffset(vertex), 0);
         return vertex + offset;
-    }
-
-    public void Debug1(HexTile tile)
-    {
-        string debug = "";
-        for(HexDirection dir = HexDirection.NW; dir <= HexDirection.SW; dir++)
-        {
-            debug += GetOffset(tile.GetCorner(dir)).y +  ", "; 
-        }
-        Debug.Log(debug);
     }
 
     // Adds a triangle given three vertices

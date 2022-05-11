@@ -20,7 +20,7 @@ public static class Hexagon
     public static float blendFactor = 1 - solidFactor;
 
     // The amount per "unit" of elevation that the tile is elevated.
-    public static float elevationStep = 1.5f;
+    public static float elevationStep = 4f;
     public static float[,] noiseMap;
 
     // A list of vectors for the corner vertices in relation to the center
@@ -61,7 +61,7 @@ public static class Hexagon
 
     public static float GetOffset(Vector3 position)
     {
-        (int, int) index = ( Mathf.Abs((int)(position.x % 128)), Mathf.Abs((int)(position.z % 128)) );
-        return (noiseMap[index.Item1, index.Item2]);
+        (int, int) index = ( Mathf.Abs((int)(position.x % 1080)), Mathf.Abs((int)(position.z % 1080)) );
+        return ((noiseMap[index.Item1, index.Item2]) - .5f) * 1.5f;
     }
 }
