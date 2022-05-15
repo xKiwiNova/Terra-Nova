@@ -12,7 +12,6 @@ public class HexMapMesh : MonoBehaviour
     List<int> triangles = new List<int>();
     List<Color> colors = new List<Color>();
     MeshCollider meshCollider;
-    Color32 rockColor = new Color32(220, 210, 160, 255);
 
     void Awake()
     {
@@ -62,6 +61,7 @@ public class HexMapMesh : MonoBehaviour
 
     public void Triangulate(HexTile tile, HexDirection direction)
     {
+        Color32 rockColor = tile.map.rockColor;
         Vector3 center = tile.position;
         Color color = tile.GetColor(direction);
         HexTile neighbor = tile.GetNeighbor(direction);

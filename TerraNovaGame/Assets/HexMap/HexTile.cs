@@ -63,9 +63,14 @@ public class HexTile : MonoBehaviour
         }
     }
 
+    public int precipitation;
+    public int temperature;
+    public int fertility;
+
     private Color tileColor;
     public float[] tileColorModifiers;
     public Color[] tileColors;
+    public int numBorderElevations;
 
     public void InstantiateHexTile(int x, int z, HexMap map, HexChunk chunk)
     {
@@ -92,6 +97,7 @@ public class HexTile : MonoBehaviour
         this.Color = new Color(1, 1, 1, 1);
         forestElements = new List<GameObject>();
     }
+
 
     public Color GetColor(HexDirection direction)
     {
@@ -125,8 +131,7 @@ public class HexTile : MonoBehaviour
             HexCoordinates neighborCoords = hexCoordinates.GetNeighbor(direction);
             if(neighborCoords.IsOnMap(map))
             {
-                try {SetNeighbor(direction, map.FromHexCoordinates(neighborCoords));}
-                catch{Debug.Log($"{neighborCoords.ToOffsetCoordinates().x}, {neighborCoords.ToOffsetCoordinates().y}, ({map.tiles.GetLength(0)}, {map.tiles.GetLength(0)}");}
+                SetNeighbor(direction, map.FromHexCoordinates(neighborCoords));
             }
         }
     }

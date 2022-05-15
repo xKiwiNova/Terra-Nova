@@ -25,6 +25,8 @@ public class HexMap : MonoBehaviour
     [SerializeField]
     private bool showDebugText = true;
 
+    public int maxPrec;
+
     [SerializeField]
     public bool ShowDebugText
     {
@@ -50,6 +52,7 @@ public class HexMap : MonoBehaviour
 
     public Color32 grassColor;
     public Color32 leafColor;
+    public Color32 rockColor = new Color32(220, 210, 160, 255);
     public Material leafMaterial;
 
     public HexForest hexForest;
@@ -76,16 +79,17 @@ public class HexMap : MonoBehaviour
             Random.Range(0, 99999), 
             Random.Range(10.0f, 20.0f), 
             4, .5f, 2);
+        
         Hexagon.noiseMap = elevationNoiseMap;
 
         GenerateChunks();
         MakeDebugText();
         SetNeighbors();
         ApplyElevation();
+        ApplyClimateData();
 
         Triangulate();
-
-        hexForest.GenerateForest(tiles);
+        hexForest.MakeForest();
     }
 
     // Creates each chunk
@@ -112,9 +116,10 @@ public class HexMap : MonoBehaviour
             text.rectTransform.SetParent(mapCanvas.transform, false);
             text.rectTransform.anchoredPosition = new Vector2(tile.position.x - 0.5f, tile.position.z + 1f);
 
-            text.text = tile.hexCoordinates.ToColorString();
+            text.text = tile.x + ", " + tile.z;
             text.name = $"Label {tile.ToString()}";
             tile.uiText = text;
+            text.transform.SetParent(tile.transform);
 
             // Can be set to inactive
             if(!showDebugText) { tile.uiText.enabled = false; }
@@ -144,7 +149,10 @@ public class HexMap : MonoBehaviour
             {
                 HexTile tile = GetTile(x, z);
                 tile.Elevation = (int)(Mathf.Clamp(Mathf.Round(elevationNoiseMap[x, z]), 0, 1));
-                // tile.Color = Color.HSVToRGB((tile.Elevation - 1) / 8.0f, 0.75f, 1f);
+                if(tile.Elevation == 0)
+                {
+                    tile.Color = rockColor;
+                }
             }
         }
 
@@ -155,7 +163,36 @@ public class HexMap : MonoBehaviour
                 if(neighbor != null && tile.Elevation > 1 + neighbor.Elevation)
                 {
                     tile.Elevation--;
-                    tile.Color = Color.HSVToRGB((tile.Elevation - 1) / 8.0f, 0.75f, 1f);
+                }
+
+                if(neighbor != null && tile.Elevation != neighbor.Elevation)
+                {
+                    tile.numBorderElevations++;
+                }
+            }
+        }
+    }
+
+    void ApplyClimateData()
+    {
+        float[,] precipitationNoiseMap = NoiseMap.GenerateNoiseMap(
+            tileCountX, tileCountZ, 
+            Random.Range(0, 99999), 
+            Random.Range(10.0f, 20.0f), 
+            4, .5f, 2);
+        
+        for(int x = 0; x < tileCountX; x++)
+        {
+            for(int z = 0; z < tileCountZ; z++)
+            {
+                HexTile tile = GetTile(x, z);
+                tile.precipitation = (int)(Mathf.Clamp(Mathf.Round(precipitationNoiseMap[x, z] * maxPrec), 1, maxPrec));
+                
+                //float temp = tile.precipitation / 12f;
+                //tile.Color = new Color(1 - temp, 1 - temp, 1);
+                if(tile.Elevation == 0)
+                {
+                    tile.Color = rockColor;
                 }
             }
         }
@@ -207,9 +244,23 @@ public class HexMap : MonoBehaviour
         return validX && validZ;
     }
 
+    public bool IsOnMap(HexCoordinates coordinates)
+    {
+        int x = coordinates.ToOffsetCoordinates().x;
+        int z = coordinates.ToOffsetCoordinates().y;
+
+        return IsOnMap(x, z);
+    }
+
+    public bool IsOnMap(Vector3 position)
+    {
+        return IsOnMap(HexCoordinates.FromPosition(position));
+    }
+
     // Returns a tile based on a Vector3
     public HexTile FromPosition(Vector3 position)
     {
         return this.FromHexCoordinates(HexCoordinates.FromPosition(position));
     }
+
 }
