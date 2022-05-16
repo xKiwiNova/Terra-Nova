@@ -64,7 +64,7 @@ public class HexMap : MonoBehaviour
             Random.Range(.8f, .9f),
             Random.Range(.8f, .9f));
         
-        leafColor = grassColor * new Color(.8f, .8f, .8f);
+        leafColor = grassColor * new Color(.9f, .9f, .9f);
         leafMaterial.SetColor("_BaseColor", leafColor);
 
         tileCountX = chunkCountX * Hexagon.chunkSizeX;

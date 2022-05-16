@@ -22,7 +22,7 @@ public class HexForest : MonoBehaviour
 
     public void MakeForest()
     {
-        for(float x = -Hexagon.outerRadius; x < map.tileCountX * (Hexagon.outerRadius * 3f/2f) + Hexagon.outerRadius; x += 3f)
+        for(float x = -Hexagon.outerRadius; x < map.tileCountX * (Hexagon.outerRadius * 3f/2f) + Hexagon.outerRadius; x += 4f)
         {
             for(float z = -2f * Hexagon.innerRadius; z < map.tileCountZ * (Hexagon.innerRadius * 2); z += 3f)
             {

@@ -85,16 +85,16 @@ public class HexMapMesh : MonoBehaviour
         if(neighbor != null && tile.Elevation > neighbor.Elevation)
         {
             // Creating the solid part of the triangle
-            Vector3 vertex1 = tile.GetSolidCorner(direction);
-            Vector3 vertex2 = tile.GetSecondSolidCorner(direction);
+            Vector3 vertex1 = tile.GetCorner(direction);
+            Vector3 vertex2 = tile.GetSecondCorner(direction);
             center.y = vertex1.y = vertex2.y = tile.position.y;
 
             AddTriangle(center, vertex1, vertex2);
             AddTriangleColor(color, color, color);
 
             // If the tile's elevation is higher than its neighbors, create a slant
-            Vector3 vertex3 = tile.GetCorner(direction);
-            Vector3 vertex4 = tile.GetSecondCorner(direction);
+            Vector3 vertex3 = tile.GetExtendedCorner(direction);
+            Vector3 vertex4 = tile.GetSecondExtendedCorner(direction);
 
             vertex3.y = vertex4.y = neighbor.position.y;
 
@@ -106,7 +106,7 @@ public class HexMapMesh : MonoBehaviour
             if(previousNeighbor != null && previousNeighbor.Elevation == tile.Elevation)
             {
                 Color color2 = tile.GetColor(direction.Previous());
-                Vector3 vertex5 = tile.GetCorner(direction.Previous()) + Hexagon.GetSolidCorner(direction.Next());
+                Vector3 vertex5 = tile.GetCorner(direction.Previous()) + Hexagon.GetCorner(direction.Next());
                 AddTriangle(vertex5, vertex3, vertex1);
                 AddTriangleColor(rockColor, rockColor, rockColor);
             }
@@ -115,7 +115,7 @@ public class HexMapMesh : MonoBehaviour
             if(nextNeighbor != null && nextNeighbor.Elevation == tile.Elevation)
             {
                 Color color2 = tile.GetColor(direction.Next());
-                Vector3 vertex5 = tile.GetCorner(direction.Next().Next()) + Hexagon.GetSolidCorner(direction);
+                Vector3 vertex5 = tile.GetCorner(direction.Next().Next()) + Hexagon.GetCorner(direction);
                 AddTriangle(vertex4, vertex5, vertex2);
                 AddTriangleColor(rockColor, rockColor, rockColor);
             }
@@ -126,8 +126,8 @@ public class HexMapMesh : MonoBehaviour
             if(isFirstProtrusion && !isSecondProtrusion)
             {
                 Vector3 vertex1 = tile.GetCorner(direction);
-                Vector3 vertex2 = tile.GetCorner(direction) + Hexagon.GetSolidCorner(direction.Next().Next());
-                Vector3 vertex3 = tile.GetSecondSolidCorner(direction);
+                Vector3 vertex2 = tile.GetCorner(direction) + Hexagon.GetCorner(direction.Next().Next());
+                Vector3 vertex3 = tile.GetSecondCorner(direction);
 
                 AddTriangle(center, vertex1, vertex2);
                 AddTriangleColor(color, color, color);
@@ -139,11 +139,11 @@ public class HexMapMesh : MonoBehaviour
             else if(isSecondProtrusion && !isFirstProtrusion)
             {
                 Vector3 vertex1 = tile.GetSolidCorner(direction);
-                Vector3 vertex2 = tile.GetSecondCorner(direction) + Hexagon.GetSolidCorner(direction.Previous());
+                Vector3 vertex2 = tile.GetSecondCorner(direction) + Hexagon.GetCorner(direction.Previous());
                 Vector3 vertex3 = tile.GetSecondCorner(direction);
 
-                AddTriangle(center, vertex1, vertex2);
-                AddTriangleColor(color, color, color);
+                //AddTriangle(center, vertex1, vertex2);
+                //AddTriangleColor(Color.blue, Color.blue, Color.blue);
 
                 AddTriangle(center, vertex2, vertex3);
                 AddTriangleColor(color, color, color);       
@@ -151,10 +151,10 @@ public class HexMapMesh : MonoBehaviour
             // If both
             else if(isFirstProtrusion && isSecondProtrusion)
             {
-                Vector3 vertex1 = tile.GetSolidCorner(direction);
-                Vector3 vertex2 = tile.GetSecondCorner(direction) + Hexagon.GetSolidCorner(direction.Previous());
-                Vector3 vertex3 = tile.GetCorner(direction) + Hexagon.GetSolidCorner(direction.Next().Next());
-                Vector3 vertex4 = tile.GetSecondSolidCorner(direction);
+                Vector3 vertex1 = tile.GetCorner(direction);
+                Vector3 vertex2 = tile.GetSecondCorner(direction) + Hexagon.GetCorner(direction.Previous());
+                Vector3 vertex3 = tile.GetCorner(direction) + Hexagon.GetCorner(direction.Next().Next());
+                Vector3 vertex4 = tile.GetSecondCorner(direction);
 
                 AddTriangle(center, vertex1, vertex2);
                 AddTriangleColor(color, color, color);

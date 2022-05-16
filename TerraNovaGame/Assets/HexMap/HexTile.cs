@@ -123,6 +123,15 @@ public class HexTile : MonoBehaviour
     {
         return Hexagon.GetSecondSolidCorner(direction) + position;
     }
+    public  Vector3 GetExtendedCorner(HexDirection direction)
+    {
+        return Hexagon.GetExtendedCorner(direction) + position;
+    }
+
+    public  Vector3 GetSecondExtendedCorner(HexDirection direction)
+    {
+        return Hexagon.GetSecondExtendedCorner(direction) + position;
+    }
 
     public void SetNeighbors()
     {

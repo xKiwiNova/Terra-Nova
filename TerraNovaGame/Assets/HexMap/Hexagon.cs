@@ -59,6 +59,16 @@ public static class Hexagon
         return GetSecondCorner(direction) * solidFactor;
     }
 
+    public static Vector3 GetExtendedCorner(HexDirection direction)
+    {
+        return GetCorner(direction) * (blendFactor + 1);
+    }
+
+    public static Vector3 GetSecondExtendedCorner(HexDirection direction)
+    {
+        return GetSecondCorner(direction) * (blendFactor + 1);
+    }
+
     public static float GetOffset(Vector3 position)
     {
         (int, int) index = ( Mathf.Abs((int)(position.x % 1080)), Mathf.Abs((int)(position.z % 1080)) );
